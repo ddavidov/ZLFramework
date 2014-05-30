@@ -69,7 +69,13 @@ class ZluxController extends AppController {
 	*/
 	public function getItemsManagerData()
 	{
-		// init vars
+		$zlux2 = $this->app->request->get('zlux2', 'boolean', false);
+
+		echo json_encode($zlux2 ? $this->_getItemsManagerDataZLUX2() : $thi->_getItemsManagerData());
+	}
+
+	public function _getItemsManagerDataZLUX2()
+	{
 		$s_apps	 	= explode(',', $this->app->request->get('apps', 'string', ''));
 		$s_types	= explode(',', $this->app->request->get('types', 'string', ''));
 		$s_cats		= explode(',', $this->app->request->get('categories', 'string', ''));
@@ -80,13 +86,11 @@ class ZluxController extends AppController {
 		$g_types 	= explode(',', $this->app->request->get('filter_types', 'string', ''));
 		$g_cats		= explode(',', $this->app->request->get('filter_cats', 'string', ''));
 		$g_tags		= explode(',', $this->app->request->get('filter_tags', 'string', ''));
-		$sEcho	 	= $this->app->request->get('sEcho', 'string', '');
+		$draw	 	= $this->app->request->get('draw', 'integer', false);
 
-		/* Array of database columns which should be read and sent back to DataTables. Use a space where
-		   you want to insert a non-database field (for example a counter or static image) */
-		$aColumns = array('_itemname', 'application', 'type', 'access', 'author', 'id');
 
-		/* Using _itemname for core filtering purposes */
+		// Array of database columns which should be read and sent back to DataTables
+		$columns = array('_itemname');
 
 		// filter values
 		$s_apps = array_filter($s_apps);
@@ -196,6 +200,234 @@ class ZluxController extends AppController {
 			{
 				if ( $_POST[ 'bSortable_'.intval($_POST['iSortCol_'.$i]) ] == "true" )
 				{
+					$iColumnIndex = array_search( $_POST['mDataProp_'.$_POST['iSortCol_'.$i]], $columns );
+					$aOrder[] = $columns[ $iColumnIndex ];
+					$aOrder[] = $_POST['sSortDir_'.$i] == 'desc' ? '_reversed' : '';
+				}
+			}
+		}
+
+		$aOrder = array_values($aOrder);
+		$model->setState('order_by', $aOrder);
+
+
+		// paging
+		if ( isset( $_POST['start'] ) && $_POST['length'] != '-1' )
+		{
+			$model->setState('limitstart', $_POST['start'], true);
+			$model->setState('limit', $_POST['length'], true);
+		}
+
+
+		// global search
+		if ( isset($_POST['search']) && $_POST['search']['value'] != '' ) {
+			$str = $_POST['search']['value'];
+
+			for ( $i=0, $ien=count($_POST['columns']) ; $i<$ien ; $i++ ) {
+				$requestColumn = $_POST['columns'][$i];
+				$columnIdx = array_search( $requestColumn['data'], $columns );
+				$column = $columns[ $columnIdx ];
+
+				if ( $requestColumn['searchable'] == 'true' ) {
+
+					/* === Core: Name element === */
+					if( strlen( trim( $column == '_itemname' ) ) )
+					{
+						$name = array(
+							'value' => trim( $str ),
+							'logic' => 'AND'
+						);
+						
+						$model->name($name);
+					}
+				}
+			}
+		}
+
+
+		// get items
+		$rows = array();
+		$items = $model->getList();
+		foreach ($items as &$item) {
+			$row = array();
+			$row['id'] = $item->id;
+			$row['name'] = $item->name;
+			$row['_itemname'] = $item->name; // necesary
+			$row['application']['name'] = $item->getApplication()->name;
+			$row['application']['id'] = $item->getApplication()->id;
+			$row['type']['name'] = $item->getType()->name;
+			$row['type']['id'] = $item->getType()->id;
+			$row['access'] = JText::_($this->app->zoo->getGroup($item->access)->name);
+			$row['created'] = $item->created;
+
+			// author
+			$author = $item->created_by_alias;
+			$author_id = $item->created_by;
+			$users  = $this->itemTable->getUsers($item->application_id);
+			if (!$author && isset($users[$item->created_by])) {
+				$author = $users[$item->created_by]->name;
+				$author_id = $users[$item->created_by]->id;
+			}
+			$row['author']['name'] = $author;
+			$row['author']['id'] = $author_id;
+
+			// add row
+			$rows[] = $row;
+		};
+
+
+		// debug sql
+		// dump($model->getQuery()->__toString());
+
+
+		// form and send JSON string
+		$JSON = array(
+			'draw' => $draw,
+			'recordsTotal' => $model->getResult(),
+			'recordsFiltered' => $model->getResult(),
+			'data' => $rows,
+
+			'apps' => $aaApps,
+			'types' => $aaTypes,
+			'categories' => $aaCats,
+			'tags' => $aaTags,
+			'success' => true
+		);
+
+		return $JSON;
+	}
+
+	public function _getItemsManagerData()
+	{
+		$s_apps	 	= explode(',', $this->app->request->get('apps', 'string', ''));
+		$s_types	= explode(',', $this->app->request->get('types', 'string', ''));
+		$s_cats		= explode(',', $this->app->request->get('categories', 'string', ''));
+		$s_tags		= explode(',', $this->app->request->get('tags', 'string', ''));
+		$s_authors	= explode(',', $this->app->request->get('authors', 'string', ''));
+
+		$g_apps	 	= explode(',', $this->app->request->get('filter_apps', 'string', ''));
+		$g_types 	= explode(',', $this->app->request->get('filter_types', 'string', ''));
+		$g_cats		= explode(',', $this->app->request->get('filter_cats', 'string', ''));
+		$g_tags		= explode(',', $this->app->request->get('filter_tags', 'string', ''));
+		$sEcho	 	= $this->app->request->get('sEcho', 'integer', false);
+
+		/* Array of database columns which should be read and sent back to DataTables. Use a space where
+		   you want to insert a non-database field (for example a counter or static image) */
+		$aColumns = array('_itemname', 'application', 'type', 'access', 'author', 'id');
+
+		/* Using _itemname for core filtering purposes */
+
+		// filter values
+		$s_apps = array_filter($s_apps);
+		$s_types = array_filter($s_types);
+		$s_cats = array_filter($s_cats);
+		$s_tags = array_filter($s_tags);
+		$s_authors = array_filter($s_authors);
+
+		$g_apps = array_filter($g_apps);
+		$g_types = array_filter($g_types);
+		$g_cats = array_filter($g_cats);
+		$g_tags = array_filter($g_tags);
+
+		// convert App groups into IDs
+		foreach ($g_apps as $key => $group) if (!is_numeric($group)) {
+			// remove group
+			unset($g_apps[$key]);
+
+			// add Group Apps ID
+			foreach ($this->app->application->getApplications($group) as $app) {
+				$g_apps[] = $app->id;
+			}
+		}
+
+		// remove duplicates
+		$g_apps = array_unique($g_apps);
+		$g_types = array_unique($g_types);
+		$g_cats = array_unique($g_cats);
+		$g_tags = array_unique($g_tags);
+
+
+		// get model
+		$model = $this->app->zlmodel->getNew('item');
+		$model->setState('select', 'DISTINCT a.*');
+
+		// get total items
+		$total = $model->getTotal();
+
+		// get all Apps object
+		$apps =  $this->app->table->application->all();
+
+		// get filter listings
+		$aaApps = $aaTypes = $aaCats = $aaTags = array();
+		foreach($apps as $app) if (empty($s_apps) || in_array($app->id, $s_apps))
+		{
+			// add App to list
+			$aaApps[] = array('name' => $app->name, 'id' => $app->id);
+
+			// skip filtered apps
+			if (!empty($g_apps) && !in_array($app->id, $g_apps)) {
+				continue;
+			}
+
+			// apps filtering
+			if (in_array($app->id, $g_apps)) {
+				$model->application(array('value' => $app->id));
+			}
+
+			// get types list
+			foreach ($app->getTypes() as $type) {
+
+				// populate filter list
+				if (empty($s_types) || in_array($type->id, $s_types))
+					$aaTypes[] = array('name' => $type->name, 'id' => $type->id);
+
+				// set the filtering
+				if (in_array($type->id, $g_types))
+					$model->type(array('value' => $type->id));
+			}
+
+			// get categories list
+			$list = $this->app->tree->buildList(0, $app->getCategoryTree(), array(), '- ', '.   ', '  ');
+			foreach ($list as $category) {
+
+				// populate filter list
+				if (empty($s_cats) || in_array($category->id, $s_cats))
+					$aaCats[] = array('name' => $category->treename, 'id' => $category->id);
+
+				// set the filtering
+				if (in_array($category->id, $g_cats)) 
+					$model->categories(array('value' => array($category->id)));
+			}
+
+			// get tag list
+			$tags = $this->app->table->tag->getAll($app->id);
+			foreach ($tags as $key => $tag) {
+
+				// populate filter list
+				if (empty($s_tags) || in_array($tag->name, $s_tags))
+					$tags[$key] = array('name' => $tag->name, 'id' => $tag->name);
+
+				// set the filtering
+				if (in_array($tag->name, $g_tags)) {
+					$model->tags(array('value' => array($tag->name)));
+				}
+			}
+			$aaTags = array_merge($aaTags, $tags);
+
+			// authors filtering
+			if (isset($s_authors) && !empty($s_authors)) {
+				$model->created_by(array('value' => implode(',', $s_authors)));
+			}
+		}
+
+		// ordering
+		$aOrder = array();
+		if ( isset( $_POST['iSortCol_0'] ) )
+		{
+			for ( $i=0 ; $i<intval( $_POST['iSortingCols'] ) ; $i++ )
+			{
+				if ( $_POST[ 'bSortable_'.intval($_POST['iSortCol_'.$i]) ] == "true" )
+				{
 					$iColumnIndex = array_search( $_POST['mDataProp_'.$_POST['iSortCol_'.$i]], $aColumns );
 					$aOrder[] = $aColumns[ $iColumnIndex ];
 					$aOrder[] = $_POST['sSortDir_'.$i] == 'desc' ? '_reversed' : '';
@@ -206,10 +438,10 @@ class ZluxController extends AppController {
 		$aOrder = array_values($aOrder);
 		$model->setState('order_by', $aOrder);
 
+
 		// paging
 		if ( isset( $_POST['iDisplayStart'] ) && $_POST['iDisplayLength'] != '-1' )
 		{
-
 			$model->setState('limitstart', $_POST['iDisplayStart'], true);
 			$model->setState('limit', $_POST['iDisplayLength'], true);
 		}
@@ -235,13 +467,8 @@ class ZluxController extends AppController {
 			}
 		}
 
-		// pretty print of sql
-		if (false) {
-			$find = Array("FROM", "WHERE", "AND", "ORDER BY", "LIMIT", "OR");
-			$replace = Array(" FROM", " WHERE", " AND", " ORDER BY", " LIMIT", " OR");
-			$in = $model->getQuery();
-			// dump(str_replace($find, $replace, $in));
-		}
+		// debug sql
+		// dump($model->getQuery()->__toString());
 
 		// get items
 		$rows = array();
@@ -287,7 +514,7 @@ class ZluxController extends AppController {
 			'aaData' => $rows // items
 		);
 
-		echo json_encode($JSON);
+		return $JSON;
 	}
 
 	/*
