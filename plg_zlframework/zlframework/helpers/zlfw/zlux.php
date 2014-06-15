@@ -77,13 +77,17 @@ class zlfwHelperZlux extends AppHelper {
 		{
 			// load zlux2 if indicated
 			if($zlux2) {
-				$path = 'root:templates/'.JFactory::getApplication()->getTemplate().'/warp.php';
+				$template = JFactory::getApplication()->getTemplate();
+				$path = 'root:templates/'.$template.'/warp.php';
 
 				// if no file found it's not warp 7, load zlux uikit css and js
 				if (!$this->app->path->path($path)) {
 					$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.uikit.min.css');
 					$this->app->document->addScript('zlfw:vendor/zlux/js/uikit/uikit.min.js');
 				} else {
+					// load warp uikit js
+					$this->app->document->addScript('root:templates/'.$template.'/warp/vendor/uikit/js/uikit.js');
+					// and zlux styles
 					$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.min.css');	
 				}
 
