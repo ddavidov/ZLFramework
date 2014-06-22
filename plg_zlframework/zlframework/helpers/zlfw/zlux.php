@@ -145,7 +145,7 @@ class zlfwHelperZlux extends AppHelper {
 			$urls = array(
 				'zlfw' => 'plugins/system/zlframework/zlframework/',
 				'zlux' => 'plugins/system/zlframework/zlframework/vendor/zlux/',
-				'ajax' => JURI::base() . 'index.php?option=com_zoolanders&format=raw',
+				'ajax' => JURI::base() . 'index.php?option=com_zoolanders&format=raw&'. $this->app->session->getFormToken() .'=1',
 				'root' => JURI::root()
 			);
 

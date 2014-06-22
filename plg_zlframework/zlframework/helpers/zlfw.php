@@ -283,6 +283,18 @@ class zlfwHelper extends AppHelper {
 		return false;
 	}
 
+	/**
+	 * checkToken - check for request forgeries
+	 */
+	public function checkToken()
+	{
+		if($this->app->request->get('format', 'string', '') === 'raw') {
+			$this->app->session->checkToken('get') or jexit('Invalid Token');		
+		} else {
+			$this->app->session->checkToken() or jexit('Invalid Token');		
+		}
+	}
+
 	/*
 	 Function: getApplications
 	 Returns valid App Objects from ID array
