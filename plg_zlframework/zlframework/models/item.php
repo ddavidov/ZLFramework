@@ -500,9 +500,9 @@ class ZLModelItem extends ZLModel
 
 			// set the app->type->elements query
 			if ($app_query && $types_query) {
-				$wheres['OR'][] = '(' . $app_query . ' AND (' . $types_query . '))';
+				$wheres['AND'][] = '(' . $app_query . ' AND (' . $types_query . '))';
 			} else if ($app_query || $types_query) {
-				$wheres['OR'][] = '(' . $app_query . $types_query . ')';
+				$wheres['AND'][] = '(' . $app_query . $types_query . ')';
 			}
 		}
 
