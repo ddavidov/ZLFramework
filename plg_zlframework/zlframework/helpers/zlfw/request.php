@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 	Class: zlfwHelperRequest
 		The ZLFW request helper class
 */
-class zlfwHelperRequest extends FilesystemHelper {
+class zlfwHelperRequest extends AppHelper {
 
 	/**
 	 * isAjax
