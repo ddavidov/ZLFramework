@@ -70,38 +70,44 @@ class zlfwHelperZlux extends AppHelper {
 	/**
 	 * Load ZLUX Main assets
 	 */
-	protected $_assets_loaded = false;
-	public function loadMainAssets($uikit = false)
+	protected $_zlux1_loaded = false;
+	protected $_zlux2_loaded = false;
+	public function loadMainAssets($zlux2 = false)
 	{
-		if (!$this->_assets_loaded)
-		{
+		// load zlux2 if indicated
+		if($zlux2 && !$this->_zlux2_loaded) {
+			$template = JFactory::getApplication()->getTemplate();
+			$path = 'root:templates/'.$template.'/warp.php';
+
+			// if no file found it's not warp 7, load zlux uikit css and js
+			if (!$this->app->path->path($path)) {
+				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.uikit.min.css');
+				$this->app->document->addScript('zlfw:vendor/zlux/js/uikit/uikit.min.js');
+			} else {
+				// load warp uikit js
+				$this->app->document->addScript('root:templates/'.$template.'/warp/vendor/uikit/js/uikit.js');
+				// and zlux styles
+				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.min.css');	
+			}
+
+			$this->app->document->addScript('zlfw:vendor/zlux/js/zlux.min.js');
+
+			$this->loadVariables(true);
+
+			// set loaded state
+			$this->_zlux2_loaded = true;
+
+		} else if(!$this->_zlux1_loaded) {
+
 			// zlux assets
 			$this->app->document->addStylesheet('zlfw:zlux/zluxMain.css');
 			$this->app->document->addScript('zlfw:zlux/zluxMain.js');
 
-			// load uikit if indicated
-			if($uikit) {
-				$path = 'root:templates/'.JFactory::getApplication()->getTemplate().'/warp.php';
-
-				// if no file found its not warp 7, load uikit
-				if (!$this->app->path->path($path)) {
-					$this->app->document->addStylesheet('zlfw:zlux/assets/uikit/uikit_wrapped.css');
-					$this->app->document->addScript('zlfw:zlux/assets/uikit/uikit.min.js');
-				
-				} else
-					// is warp 7, only load extended uikit styles
-					$this->app->document->addStylesheet('zlfw:zlux/assets/uikit/uikit_ext.css');
-
-			// else load ZL Bootstrap
-			} else {
-				$this->loadBootstrap(true);
-			}
-
-			// load Variables
+			$this->loadBootstrap(true);
 			$this->loadVariables();
 
 			// set loaded state
-			$this->_assets_loaded = true;
+			$this->_zlux1_loaded = true;
 		}
 	}
 
@@ -130,22 +136,31 @@ class zlfwHelperZlux extends AppHelper {
 	/**
 	 * Load JS Variables
 	 */
-	public function loadVariables()
+	public function loadVariables($zlux2 = false)
 	{
 		// init vars
 		$javascript = '';
-		$app_id = $this->app->zoo->getApplication() ? $this->app->zoo->getApplication()->id : '';
 
 		// save Joomla! URLs
-		$javascript .= 'jQuery.zlux.url._root = "' . JURI::root() . '";';
-		$javascript .= 'jQuery.zlux.url._root_path = "' . JURI::root(true) . '";';
-		$javascript .= 'jQuery.zlux.url._base = "' . JURI::base() . '";';
-		$javascript .= 'jQuery.zlux.url._base_path = "' . JURI::base(true) . '";';
-		$javascript .= 'jQuery.zlux.zoo.app_id = "' . $app_id . '";';
+		if ($zlux2) {
+			$urls = array(
+				'zlfw' => 'plugins/system/zlframework/zlframework/',
+				'zlux' => 'plugins/system/zlframework/zlframework/vendor/zlux/',
+				'ajax' => JURI::base() . 'index.php?option=com_zoolanders&format=raw&'. $this->app->session->getFormToken() .'=1',
+				'root' => JURI::root()
+			);
 
-		if(JFile::exists(JPATH_ADMINISTRATOR.'/components/com_zoolanders/zoolanders.php')
-			&& JComponentHelper::getComponent('com_zoolanders', true)->enabled)
-				$javascript .= 'jQuery.zlux.com_zl = true;';
+			$javascript .= "jQuery.zx.url.push(" . json_encode($urls) . ");";
+
+		} else {
+			$app_id = $this->app->zoo->getApplication() ? $this->app->zoo->getApplication()->id : '';
+
+			$javascript .= 'jQuery.zlux.url._root = "' . JURI::root() . '";';
+			$javascript .= 'jQuery.zlux.url._root_path = "' . JURI::root(true) . '";';
+			$javascript .= 'jQuery.zlux.url._base = "' . JURI::base() . '";';
+			$javascript .= 'jQuery.zlux.url._base_path = "' . JURI::base(true) . '";';
+			$javascript .= 'jQuery.zlux.zoo.app_id = "' . $app_id . '";';
+		}
 
 		// set translations strings
 		$translations = array
@@ -208,7 +223,12 @@ class zlfwHelperZlux extends AppHelper {
 		$translations = array_map(array('JText', '_'), $translations);
 
 		// add to script
-		$javascript .= "jQuery.zlux.lang.set(" . json_encode($translations) . ");";
+		if ($zlux2) {
+			$javascript .= "jQuery.zx.lang.push(" . json_encode($translations) . ");";
+			$javascript .= "jQuery.zx.init();";
+		} else {
+			$javascript .= "jQuery.zlux.lang.set(" . json_encode($translations) . ");";
+		}
 
 		// load the script
 		$this->app->document->addScriptDeclaration($javascript);
