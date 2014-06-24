@@ -70,43 +70,44 @@ class zlfwHelperZlux extends AppHelper {
 	/**
 	 * Load ZLUX Main assets
 	 */
-	protected $_assets_loaded = false;
+	protected $_zlux1_loaded = false;
+	protected $_zlux2_loaded = false;
 	public function loadMainAssets($zlux2 = false)
 	{
-		if (!$this->_assets_loaded)
-		{
-			// load zlux2 if indicated
-			if($zlux2) {
-				$template = JFactory::getApplication()->getTemplate();
-				$path = 'root:templates/'.$template.'/warp.php';
+		// load zlux2 if indicated
+		if($zlux2 && !$this->_zlux2_loaded) {
+			$template = JFactory::getApplication()->getTemplate();
+			$path = 'root:templates/'.$template.'/warp.php';
 
-				// if no file found it's not warp 7, load zlux uikit css and js
-				if (!$this->app->path->path($path)) {
-					$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.uikit.min.css');
-					$this->app->document->addScript('zlfw:vendor/zlux/js/uikit/uikit.min.js');
-				} else {
-					// load warp uikit js
-					$this->app->document->addScript('root:templates/'.$template.'/warp/vendor/uikit/js/uikit.js');
-					// and zlux styles
-					$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.min.css');	
-				}
-
-				$this->app->document->addScript('zlfw:vendor/zlux/js/zlux.min.js');
-
+			// if no file found it's not warp 7, load zlux uikit css and js
+			if (!$this->app->path->path($path)) {
+				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.uikit.min.css');
+				$this->app->document->addScript('zlfw:vendor/zlux/js/uikit/uikit.min.js');
 			} else {
-
-				// zlux assets
-				$this->app->document->addStylesheet('zlfw:zlux/zluxMain.css');
-				$this->app->document->addScript('zlfw:zlux/zluxMain.js');
-
-				$this->loadBootstrap(true);
+				// load warp uikit js
+				$this->app->document->addScript('root:templates/'.$template.'/warp/vendor/uikit/js/uikit.js');
+				// and zlux styles
+				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.min.css');	
 			}
 
-			// load Variables
-			$this->loadVariables($zlux2);
+			$this->app->document->addScript('zlfw:vendor/zlux/js/zlux.min.js');
+
+			$this->loadVariables(true);
 
 			// set loaded state
-			$this->_assets_loaded = true;
+			$this->_zlux2_loaded = true;
+
+		} else if(!$this->_zlux1_loaded) {
+
+			// zlux assets
+			$this->app->document->addStylesheet('zlfw:zlux/zluxMain.css');
+			$this->app->document->addScript('zlfw:zlux/zluxMain.js');
+
+			$this->loadBootstrap(true);
+			$this->loadVariables();
+
+			// set loaded state
+			$this->_zlux1_loaded = true;
 		}
 	}
 
@@ -149,7 +150,7 @@ class zlfwHelperZlux extends AppHelper {
 				'root' => JURI::root()
 			);
 
-			$javascript .= "jQuery.zlux.url.push(" . json_encode($urls) . ");";
+			$javascript .= "jQuery.zx.url.push(" . json_encode($urls) . ");";
 
 		} else {
 			$app_id = $this->app->zoo->getApplication() ? $this->app->zoo->getApplication()->id : '';
@@ -223,13 +224,11 @@ class zlfwHelperZlux extends AppHelper {
 
 		// add to script
 		if ($zlux2) {
-			$javascript .= "jQuery.zlux.lang.push(" . json_encode($translations) . ");";
+			$javascript .= "jQuery.zx.lang.push(" . json_encode($translations) . ");";
+			$javascript .= "jQuery.zx.init();";
 		} else {
 			$javascript .= "jQuery.zlux.lang.set(" . json_encode($translations) . ");";
 		}
-
-		// init ZX
-		$javascript .= "jQuery.zlux.init();";
 
 		// load the script
 		$this->app->document->addScriptDeclaration($javascript);
