@@ -71,7 +71,7 @@ class ZluxController extends AppController {
 	{
 		$zlux2 = $this->app->request->get('zlux2', 'boolean', false);
 
-		echo json_encode($zlux2 ? $this->_getItemsManagerDataZLUX2() : $thi->_getItemsManagerData());
+		echo json_encode($zlux2 ? $this->_getItemsManagerDataZLUX2() : $this->_getItemsManagerData());
 	}
 
 	public function _getItemsManagerDataZLUX2()
