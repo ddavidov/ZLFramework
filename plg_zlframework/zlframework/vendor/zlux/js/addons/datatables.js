@@ -177,7 +177,7 @@
     ZX.datatables.pagination = pagination;
     ZX.datatables.pagination_simple = pagination_simple;
 
-})(jQuery, jQuery.zlux, window, document);
+})(jQuery, jQuery.zx, window, document);
 
 
 /* DataTables 1.10.0

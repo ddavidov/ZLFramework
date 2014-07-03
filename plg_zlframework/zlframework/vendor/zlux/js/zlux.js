@@ -8,29 +8,13 @@
 ;(function ($, window, document, undefined) {
     "use strict";
 
-    var ZX = $.zlux || {};
+    var ZX = $.zx || {};
 
     if (ZX.fn) {
         return ZX;
     }
 
     ZX.version = '2.0';
-
-    ZX.fn = function(command, options) {
-
-        var args = arguments, cmd = command.match(/^([a-z\-]+)(?:\.([a-z]+))?/i), component = cmd[1], method = cmd[2];
-
-        if (!ZX[component]) {
-            $.error("UIkit component [" + component + "] does not exist.");
-            return this;
-        }
-
-        return this.each(function() {
-            var $this = $(this), data = $this.data(component);
-            if (!data) $this.data(component, (data = ZX[component](this, method ? undefined : options)));
-            if (method) data[method].apply(data, Array.prototype.slice.call(args, 1));
-        });
-    };
 
 
     /** URI **/
@@ -249,27 +233,31 @@
     };
 
 
+    // ZX init functions
+    var _ready = $.Deferred();
+    ZX.ready = function() {
+        return _ready.promise();
+    };
+    ZX.init = function() {
+        _ready.resolve();
+    };
+
+
     // declare zlux
-    $.zlux = ZX;
-    $.fn.zx = ZX.fn;
-
-
-    // style workaround, wrap with zlux floating elements
-    $(document).on("uk-domready", function(e) {
-        $('body > .uk-datepicker, body > .uk-timepicker, body > .uk-tooltip').wrap('<div class="zlux" />');
-    });
+    $.zx = ZX;
 
 })(jQuery, window, document);
 
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
 
-    ZX.components = {};
+    ZX.extensions = {};
 
+
+    /** COMPONENT **/
     ZX.component = function(name, def) {
 
         var fn = function(element, options) {
-
             var $this = this;
 
             this.element = element ? $(element) : null;
@@ -298,6 +286,8 @@
 
         $.extend(true, fn.prototype, {
 
+            type: 'component',
+
             defaults : {plugins: []},
 
             init: function(){},
@@ -323,7 +313,6 @@
             },
 
             proxy: function(obj, methods) {
-
                 var $this = this;
 
                 methods.split(' ').forEach(function(method) {
@@ -332,7 +321,6 @@
             },
 
             mixin: function(obj, methods) {
-
                 var $this = this;
 
                 methods.split(' ').forEach(function(method) {
@@ -342,8 +330,10 @@
 
         }, def);
 
-        this.components[name] = fn;
+        // save the component
+        this.extensions[name] = fn;
 
+        // declare the component init function and save it into ZX root
         this[name] = function() {
 
             var element, options;
@@ -371,17 +361,157 @@
                 return element.data(name);
             }
 
-            return (new ZX.components[name](element, options));
+            return (new ZX.extensions[name](element, options));
+        };
+
+        // Component plugin declaration
+        this[name].plugin = function(plugin, def) {
+            ZX.extensions[name].plugins[plugin] = def;
         };
 
         return fn;
     };
 
-    ZX.plugin = function(component, name, def) {
-        this.components[component].plugins[name] = def;
+
+    /** PLUGIN **/
+    ZX.plugin = function(name, def) {
+
+        var fn = function(element, options) {
+            var $this = this;
+
+            this.element = element ? $(element) : null;
+
+            this.init(options);
+        };
+
+        $.extend(true, fn.prototype, {
+
+            type: 'plugin',
+
+            init: function(){}
+
+        }, def);
+
+
+        // save the plugin
+        this.extensions[name] = fn;
+
+        // declare the plugin init function and save it into ZX root
+        this[name] = function() {
+
+            var element, options;
+
+            if(arguments.length) {
+                switch(arguments.length) {
+                    case 1:
+
+                        if (typeof arguments[0] === "string" || arguments[0].nodeType || arguments[0] instanceof jQuery) {
+                            element = $(arguments[0]);
+                        } else {
+                            options = arguments[0];
+                        }
+
+                        break;
+                    case 2:
+
+                        element = $(arguments[0]);
+                        options = arguments[1];
+                        break;
+                }
+            }
+
+            return (new ZX.extensions[name](element, options));
+        };
+
+        return fn;
     };
 
-})(jQuery, jQuery.zlux, window, document);
+
+    /** FN **/
+    ZX.fn = function(command, options) {
+
+        var args = arguments, cmd = command.match(/^([a-z\-]+)(?:\.([a-z]+))?/i), extension = cmd[1], method = cmd[2];
+
+        if (!ZX[extension]) {
+            $.error("UIkit extension [" + extension + "] does not exist.");
+            return this;
+        }
+
+        // component
+        if(ZX.extensions[extension].prototype.type === 'component') {
+
+            return this.each(function() {
+                // the element
+                var $this = $(this),
+
+                // get the saved instance
+                data = $this.data(extension);
+
+                // if no instance, init it
+                if (!data) $this.data(extension, (data = ZX[extension](this, method ? undefined : options)));
+
+                // if method provided, execute it
+                if (method) data[method].apply(data, Array.prototype.slice.call(args, 1));
+            });
+        }
+
+        // plugin
+        else if(ZX.extensions[extension].prototype.type === 'plugin') {
+
+            return this.each(function() {
+                ZX[extension](this, Array.prototype.slice.call(args, 1));
+            });
+        }
+    };
+
+    $.fn.zx = ZX.fn;
+
+})(jQuery, jQuery.zx, window, document);
+
+;(function ($, ZX, window, document, undefined) {
+    "use strict";
+
+    ZX.plugin('animate', {
+
+        init: function(options) {
+            var $this = this,
+
+            // set animation class
+            animation = 'zx-animate-' + $.trim(options[0]),
+
+            // set callback
+            callback = options[1] ? options[1] : null;
+                
+            // animate
+            $this.animate(animation).done(function(){
+
+                // execute any callback passing the element as scope
+                if (callback) callback.apply($this.element);
+            });
+        },
+
+        animate: function(animation) {
+            var $this = this;
+
+            return $.Deferred(function(defer) {
+
+                // animate the element with CSS3
+                $this.element.addClass(animation)
+
+                // when done
+                .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
+
+                    // remove the class to allow further animation
+                    $this.element.removeClass(animation);
+
+                    defer.resolve();
+                });
+
+            }).promise();
+        }
+    });
+
+})(jQuery, jQuery.zx, window, document);
 
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
@@ -404,7 +534,7 @@
         delete settings.queue;
 
         // set request defaults
-        settings = $.extend({
+        settings = $.extend(true, {
             dataType: 'json',
             type: 'POST'
         }, settings);
@@ -422,29 +552,37 @@
             // if response recieved
             request.done(function(result, a, b)
             {
-                // json response is assumed
-                if (ZX.utils.typeOf(result) !== 'object')
+                // if dataType is json
+                if (settings.dataType === 'json')
                 {
-                    try {
-                        // parse response detecting if there was some server side error
-                        json = $.parseJSON(result);
+                    // check if object returned
+                    if(ZX.utils.typeOf(result) !== 'object')
+                    {
+                        try {
+                            // parse response detecting if there was some server side error
+                            json = $.parseJSON(result);
 
-                    // handle exception
-                    } catch(e) {
-                        response.errors.push(String(result));
-                        response.errors.push('An server-side error occurred. ' + String(e));
-                        defer.reject(response);
+                        // handle exception
+                        } catch(e) {
+                            response.errors.push(String(result));
+                            response.errors.push('An server-side error occurred. ' + String(e));
+                            defer.reject(response);
+                        }
                     }
-                }
 
-                // status must be set
-                else if (result.success === undefined) {
-                    result.errors = ['Response format error: status not specified'];
-                    defer.reject(result);
-                } else if (result.success)
+                    // check if status set
+                    else if (result.success === undefined) {
+                        result.errors = ['Response format error: status not specified'];
+                        defer.reject(result);
+                    } else if (result.success)
+                        defer.resolve(result);
+                    else
+                        defer.reject(result);
+
+                // else just send the result over
+                } else {
                     defer.resolve(result);
-                else
-                    defer.reject(result);
+                }
             })
             
             // if something went wrong
@@ -465,7 +603,7 @@
                         break;
 
                     default:
-                        response.errors.push('An error occurred: ' + status + '\n Error: ' + error);
+                        response.errors.push('An ' + status + ' occurred<br />' + error + '<br /><br />Returned' + jqxhr.responseText);
                         break;
                 }
 
@@ -493,26 +631,31 @@
         return ZX.ajax.request(request)
         .done(function(response){
 
+            // close others, then notify
             if(notify.group) ZX.notify.closeAll(notify.group);
 
             // display message
-            if(response.message) ZX.notify(response.message, $.extend({
+            if(response.message) ZX.notify(response.message, $.extend(true, {
                 status: 'success'
             }, notify));
             
         }).fail(function(response){
 
-            if(notify.group) $.UIkit.notify.closeAll(notify.group);
+            // close others, then notify
+            if(notify.group) ZX.notify.closeAll(notify.group);
 
             // display errors
             if(response.errors && response.errors.length) $.each(response.errors, function(){
-                ZX.notify(this, $.extend({
+                ZX.notify(this, $.extend(true, {
                     status: 'danger'
                 }, notify));
             });
+           
+        }).always(function(response){
+
             // display notices
             if(response.notices && response.notices.length) $.each(response.notices, function(){
-                ZX.notify(this, $.extend({
+                ZX.notify(this, $.extend(true, {
                     status: 'warning'
                 }, notify));
             });
@@ -640,56 +783,78 @@
         }
     };
 
-})(jQuery, jQuery.zlux, window, document);
+})(jQuery, jQuery.zx, window, document);
 
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
 
-    var notify = function(msg, options){
+    var modal = function(){},
 
-        // display message
-        var notify = $.UIkit.notify(msg, options);
+    dialog = function(content, options){
 
-        // wrapp for styling
-        $('.uk-notify').wrap('<div class="zlux" />');
+        var modal = $.UIkit.modal.dialog(content, options);
 
-        return notify;
-    },
+        // extend modal with
+        $.extend(modal, {
 
-    confirm = function(msg, options)
-    {
-        $.extend({}, options, {
-            'timeout': false // confirmation must wait user interaction
+            // update content
+            content: function(html) {
+                var container = this.dialog;
+
+                if(!html) {
+                    return container.html();
+                }
+
+                container.html(html);
+
+                return this;
+            }
         });
 
-        return $.Deferred(function( defer )
-        {
-            var notify = ZX.notify(msg + '<div class="uk-text-center uk-margin-top">\
-                    <a class="zx-x-confirm uk-margin-right"><i class="uk-icon-check uk-icon-small"></i></a>\
-                    <a class="zx-x-cancel uk-margin-left"><i class="uk-icon-times uk-icon-small"></i></a>\
-                </div>',
-            options);
+        // add zlux class for the holding content styling
+        modal.element.addClass('zx');
 
-            notify.element.on('click', '.zx-x-confirm', function(e, b){
-                defer.resolve();
-            });
-
-            notify.element.on('click', function(e, b){
-                defer.reject();
-            });
-
-        }).promise();
+        return modal;
     },
 
-    closeAll = function(group, instantly){
-        $.UIkit.notify.closeAll(group, instantly);
+    alert = function(content, options){
+
+        var modal = $.UIkit.modal.dialog(([
+            '<div class="uk-margin uk-modal-content">'+String(content)+'</div>',
+            '<div class="uk-modal-buttons"><button class="uk-button uk-button-small uk-button-primary uk-modal-close">'+ZX.lang.get('Ok')+'</button></div>'
+        ]).join(""), $.extend({bgclose:false, keyboard:false}, options));
+
+        modal.show();
+
+        return modal;
+    },
+
+    confirm = function(content, onconfirm, options){
+
+        onconfirm = $.isFunction(onconfirm) ? onconfirm : function(){};
+
+        var modal = $.UIkit.modal.dialog(([
+           '<div class="uk-margin uk-modal-content">'+String(content)+'</div>',
+           '<div class="uk-modal-buttons"><button class="uk-button uk-button-small uk-button-primary js-modal-confirm">'+ZX.lang.get('Ok')+'</button> <button class="uk-button uk-button-small uk-modal-close">'+ZX.lang.get('Cancel')+'</button></div>'
+        ]).join(""), $.extend({bgclose:false, keyboard:false}, options));
+
+        modal.element.find(".js-modal-confirm").on("click", function(){
+           onconfirm();
+           modal.hide();
+        });
+
+        modal.show();
+
+        return modal;
     };
 
-    ZX.notify          = notify;
-    ZX.notify.confirm  = confirm;
-    ZX.notify.closeAll = closeAll;
 
-})(jQuery, jQuery.zlux, window, document);
+    ZX.modal          = modal;
+    ZX.modal.dialog   = dialog;
+    ZX.modal.alert    = alert;
+    ZX.modal.confirm  = confirm;
+
+})(jQuery, jQuery.zx, window, document);
 
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
@@ -701,700 +866,59 @@
             affix:  'append' // append, prepend or replace
         },
 
-        init: function() {},
+        init: function() {
+            // run default
+            this.on();
+        },
 
-        on: function(args) {
+        on: function() {
             var $this = this;
 
             $this.icon_class = false;
 
-            // check for icon, use it if found
-            if($('i', $this.element)[0]) {
-                $this.icon_class = $('i', $this.element).attr('class');
-                $('i', $this.element).attr('class', 'uk-icon-spinner uk-icon-spin');
+            // find and existing icon
+            $this.icon = $this.element.is('i') ? $this.element : $('i', $this.element).first();
 
-            // create the icon if not
-            } else if($this.options.affix == 'replace') {
-                $this.element.html($('<i class="uk-icon-spinner uk-icon-spin"></i>').addClass($this.options['class']));
+            // use it if found
+            if($this.icon.length) {
+                // save original class
+                $this.icon_class = $this.icon.attr('class');
+                // hardcode the width to avoid movement effects
+                $this.icon.width($this.icon.width());
+                // set new class
+                $this.icon.attr('class', 'uk-icon-zx-spinner uk-icon-spin');
+
+            // else, create one
             } else {
-                $this.element[$this.options.affix]($('<i class="uk-icon-spinner uk-icon-spin"></i>').addClass($this.options['class']));
+                $this.icon = $('<i class="uk-icon-zx-spinner uk-icon-spin"></i>');
+
+                // place the icon
+                if($this.options.affix == 'replace') {
+                    $this.element.html($this.icon);
+                } else {
+                    $this.element[$this.options.affix]($this.icon);
+                }
             }
+
+            // add custom class
+            $this.icon.addClass($this.options['class']);
         },
 
-        off: function(args) {
+        off: function() {
             var $this = this;
 
             // remove the spin classes but not the icon
-            $('i', $this.element).removeClass('uk-icon-spinner uk-icon-spin');
+            $this.icon.removeClass('uk-icon-zx-spinner uk-icon-spin');
 
             // recover class, if any
-            if($this.icon_class) $('i', $this.element).attr('class', $this.icon_class);
-        }
+            if($this.icon_class) $this.icon.attr('class', $this.icon_class);
 
-    });
+            // remove hardcoded width
+            $this.icon.width('');
 
-})(jQuery, jQuery.zlux, window, document);
-
-;(function ($, ZX, window, document, undefined) {
-    "use strict";
-
-    var dropdown;
-
-    ZX.components.manager = {
-
-        id: 0,
-
-        init: function() {
-            var $this = this;
-           
-            // save nav node ref
-            // this.nav = ZX.managerNav($('.zx-manager-nav', this.element));
-
-            // this.nav.addChild({icon: 'filter'});
-            // this.nav.addChild({icon: 'user'});
-
-        },
-
-
-        getResource: function(resource) {
-            // if already a resource object return directly, else retrieve from node
-            return resource instanceof jQuery ? resource.data('managerResource') : resource;
-        },
-
-        preResourceDelete: function(resource, request) {},
-
-        deleteResource: function(resource) {
-            var $this = this;
-
-            // only allowed to be submited once
-            // if ($(this).data('submited')) return; $(this).data('submited', true);
-
-            var request = {
-                url: $.zlux.url.ajax('zlux', 'deleteResource'),
-                data: {
-                    type: $this.type
-                }
-            };
-
-            // start spinner
-            // $('.column-icon i', resource.dom).spin('on');
-
-
-            // pre action, allow changing request data
-            this.preResourceDelete(resource, request);
-
-            // make the request and return a promise
-            ZX.ajax.request(request).done(function(json) {
-
-                // remove the resource node
-                resource.element.fadeOut('slow', function(){
-                    $(this).remove();
-
-                    // trigger event
-                    $this.trigger('resourceDeleted', resource);
-                });
-
-            }).fail(function(response){
-     
-                // console.log(response);
-
-                // show the message
-                // $this.pushMessageToObject($object, msg);
-            })
-
-            // on result
-            .always(function(json) {
-                // console.log(json);
-                // remove spinner
-                // $('.column-icon i', $object.dom).removeClass('uk-icon-spinner uk-icon-spin');
-            });
-        },
-
-        initResources: function(dom) {
-            var $this = this;
-
-            dom = dom === undefined ? $this.find('.zx-manager-resources') : dom;
-
-            // load DataTables
-            return ZX.assets.load(ZX.url.get('zlux:js/addons/datatables.min.js')).done(function(){
-
-                // init DT
-                ZX.datatables();
-
-                // init DataTables instance
-                $this.resources = dom.dataTable($.extend(true, {}, ZX.datatables.settings, $this.DTsettings)).DataTable();
-
-                // details
-                $this.resources.on('click', '.zx-x-details-btn', function(){
-                    var toggle = $(this),
-                        resource = toggle.closest('.zx-manager-resource'),
-                        details = $('.zx-x-details', resource);
-
-                    // open the details
-                    if (!resource.hasClass('zx-open')) {
-                        resource.addClass('zx-open');
-                        toggle.removeClass('uk-icon-angle-down').addClass('uk-icon-angle-up');
-
-                        // scroll to the Object with animation
-                        // $this.zluxdialog.content.stop().animate({
-                        //     'scrollTop': $resource.get(0).offsetTop
-                        // }, 900, 'swing');
-
-                        // open, when done...
-                        details.slideDown('fast', function(){
-                            // $this.zluxdialog.scrollbar('refresh');
-                        });
-
-                    // close them
-                    } else {
-                        toggle.addClass('uk-icon-angle-down').removeClass('uk-icon-angle-up');
-                        resource.removeClass('zx-open');
-                        details.slideUp('fast', function(){
-                            // $this.zluxdialog.scrollbar('refresh');
-                        });
-                    }
-                });
-
-                // EVENT trigger resourceSelected
-                $this.resources.on('click', '.zx-manager-resource .zx-x-name a', function (e) {
-                    e.preventDefault();
-                    $this.trigger('resourceSelected', $this.getResource($(this).closest('.zx-manager-resource')));
-                });
-
-                // delete resource event
-                $this.resources.on('click', '.zx-manager-resource .zx-x-remove', function(e){
-                    e.preventDefault();
-                    var resource = $this.getResource($(this).closest('.zx-manager-resource'));
-
-                    // prompt confirmation
-                    ZX.notify.confirm(ZX.lang._('DELETE_THIS_RESOURCE'), {timeout: false}).done(function(){
-                        $this.deleteResource(resource);
-                    });
-                });
-            });
-        },
-
-        DTsettings: {
-            serverSide: true
-        }
-    };
-
-
-    ZX.component('managerResource', {
-
-        // data defaults
-        data: {
-            editable: false
-        },
-
-        // option defaults
-        defaults: {
-            template      : '<div class="zx-x-tools">\
-                                <i class="zx-x-details-btn uk-icon-angle-down" />\
-                                {{#editable}}\
-                                <i class="zx-x-remove uk-icon-minus-circle" data-uk-tooltip title="' + ZX.lang._('DELETE') + '" />\
-                                {{/some}}\
-                            </div>\
-                            <div class="zx-x-name"><a href="#" class="zx-x-name-link">{{name}}</a></div>\
-                            {{#details && details.length}}\
-                            <div class="zx-x-details">\
-                                <div class="zx-x-messages" />\
-                                <div class="zx-x-details-content">\
-                                    <ul class="uk-list">\
-                                        {{~details}}\
-                                        <li>{{$item}}</li>\
-                                        {{/details}}\
-                                        </ul>\
-                                </div>\
-                            </div>\
-                            {{/end}}'
-        },
-
-        init: function() {},
-
-        /* renders the resource content */
-        render: function() {
-            return $.UIkit.Utils.template(this.options.template, this.data);
-        },
-
-        /* push new resource data into the current one */
-        pushData: function(data) {
-            this.data = $.extend({}, this.data, data);
-        }
-
-    });
-
-    
-    ZX.component('managerNav', {
-
-        defaults: {
-            template:       '<ul class="uk-navbar-nav">\
-                                <li class="uk-parent" data-uk-dropdown>\
-                                    <a href=""><i class="uk-icon-bars"></i></a>\
-                                    <div class="uk-dropdown uk-dropdown-navbar">\
-                                        <ul class="uk-nav uk-nav-navbar">\
-                                            <li><a href="">Another item</a></li>\
-                                        </ul>\
-                                    </div>\
-                                </li>\
-                            </ul>\
-                            <div class="uk-navbar-content">\
-                                <form class="uk-form uk-margin-remove uk-display-inline-block">\
-                                   <input type="text" placeholder="Search">\
-                                </form>\
-                            </div>',
-            option_tmpl    : '<li><a href=""><i class="uk-icon-{{icon}}"></i> Some text </a></li>'
-        },
-
-        init: function() {
-            this.element.append(this.options.template);
-        },
-
-        addChild: function(data) {
-            this.find('.uk-dropdown > ul').append($.UIkit.Utils.template(this.options.option_tmpl, data));
+            // remove spin instance from element
+            $this.element.removeData('spin');
         }
     });
 
-
-    /* Dropdown
-    ---------------------------------------------- */
-
-    // extends itemsManager
-    ZX.components.managerDropdown = $.extend(true, {}, ZX.components.manager, {
-
-        defaults: {
-            init_display: '',
-            offsettop: 5,
-            template: function(data, opts) {
-
-                var content = '';
-
-                content += '<div class="zx-manager-nav">';
-                    content += '<div class="uk-search">';
-                        content += '<input class="uk-search-field" type="search" placeholder="search...">';
-                        content += '<button class="uk-search-close" type="reset"></button>';
-                    content += '</div>';
-                content += '</div>';
-                content += '<table class="uk-table zx-manager-resources"></table>';
-
-                return content;
-            }
-        },
-
-        init: function() {
-            var $this = this;
-
-            // save current value
-            this.current = this.element.val();
-
-            // create a hidden input that will store the real value
-            this.hidden = this.element.clone().attr('type', 'hidden').removeAttr('data-zx-itempicker').insertAfter(this.element);
-
-            // set initial display
-            this.element.val(this.options.init_display).removeAttr('name');
-
-            // weitch focus from main input
-            this.on('focus', function() {
-                $('.uk-search-field', dropdown).focus();
-            });
-        },
-
-        initDropdown: function(dropdown) {
-            var $this = this;
-
-            if (!dropdown) {
-
-                dropdown = $('<div class="uk-dropdown zx-manager"></div>');
-                
-                // init searh feature
-                var thread = null;
-                dropdown.on('keyup', '.uk-search-field', function(e){
-                    var value = $(this).val();
-
-                    // close button
-                    if (value === '') {
-                        $('.uk-search-close', dropdown).hide();
-                    } else {
-                        $('.uk-search-close', dropdown).show();
-                    }
-
-                    // clear any previous query execution
-                    clearTimeout(thread);
-
-                    // if input empty, reset search
-                    if (value === '') {
-                        $this.resources.search('').draw();
-                    }
-                    
-                    // perform search on enter key press
-                    var code = (e.keyCode ? e.keyCode : e.which);
-                    if (code == 13) {
-                        $this.resources.search(value).draw();
-                        return;
-                    }
-
-                    // queue the search
-                    thread = setTimeout(function() {
-                        $this.resources.search(value).draw();
-                    }, 500); 
-                });
-
-                // reset search action
-                dropdown.on('click', '.uk-search-close', function(e){
-                    // reset form
-                    $('.uk-search-field', dropdown).val('');
-                    $(this).hide();
-
-                    // and search
-                    $this.resources.search('').draw();
-                });
-
-                dropdown.appendTo('body');
-
-                // wrap it for style fix
-                dropdown.wrap('<div class="zlux" />');
-            }
-
-            // save reference
-            this.dropdown = dropdown;
-            return dropdown;
-        },
-
-        pick: function(inititem) {
-            var offset = this.element.offset(),
-               css    = {"top": offset.top + this.element.outerHeight() + this.options.offsettop, "left": offset.left, "right":""};
-
-            this.current  = inititem ? inititem : null;
-            this.inititem = this.current;
-
-            this.update();
-
-            if ($.UIkit.langdirection == 'right') {
-               css.right = window.innerWidth - (css.left + this.element.outerWidth());
-               css.left  = "";
-            }
-
-            this.dropdown.css(css).show();
-
-            // focus on dropdown search
-            $('.uk-search-field', dropdown).focus();
-        },
-
-        update: function() {
-            var $this = this,
-                data = {},
-                tpl  = this.options.template(data, this.options);
-
-            this.dropdown.html(tpl);
-
-            // init resources
-            this.initResources($('.zx-manager-resources', this.dropdown)).done(function(){
-
-                $this.on('resourceSelected', function(e, resource) {
-                    $this.element.val(resource.data.name);
-                    $this.hidden.val(resource.data.id);
-                });
-            });
-        }
-    });
-
-})(jQuery, jQuery.zlux, window, document);
-
-;(function ($, ZX, window, document, undefined) {
-    "use strict";
-
-    var instance_id = 0, active = false, cache = {}, dropdown,
-    
-    itemsManagerSettings = {
-
-        defaults: {
-            apps: '', // Array or comma separated values
-            types: '', // idem
-            categories: '', // idem
-            tags: '', // idem
-            authors: '' // idem
-        },
-
-        init: function() {
-            var $this = this;
-
-            // init main manager
-            ZX.components.manager.init.apply(this);
-            
-            // set instance id
-            this.id = instance_id++;
-
-            // set the filter param
-            $this.filter = {};
-
-            // override the ajax function
-            this.DTsettings.ajax = function (data, callback, settings) {
-                $this.ajax(data, callback, settings);
-            };
-
-            // set language vars
-            $.extend($this.DTsettings.language, {
-                emptyTable: ZX.lang._('IM_NO_ITEMS_FOUND'),
-                info: ZX.lang._('IM_PAGINATION_INFO')
-            });
-        },
-
-        DTsettings: {
-            pageLength: 5,
-            columns:
-            [
-                {
-                    title: '', data: '_itemname', class: 'zx-manager-resource-name uk-width-1-1',
-                    render: function (data, type) {
-                        return type === 'display' ? '' : data;
-                    }
-                }
-            ],
-            initComplete: function(settings) {
-                // var input_filter = $('.zlux-x-filter-input_wrapper', wrapper)
-                
-                // .append(
-                //     // set search icon
-                //     $('<i class="icon-search" />'),
-                //     // and the cancel button
-                //     $('<i class="icon-remove zlux-ui-dropdown-unselect" />').hide().on('click', function(){
-                //         $('input', input_filter).val('');
-                //         $(this).hide();
-                //         // reset the filter
-                //         $this.oTable.fnFilter('');
-                //     })
-                // );
-
-                // // set search events
-                // $('input', input_filter).on('keyup', function(){
-                //     if ($(this).val() === '') {
-                //         $('.zlux-ui-dropdown-unselect', input_filter).hide();
-                //     } else {
-                //         $('.zlux-ui-dropdown-unselect', input_filter).show();
-                //     }
-                // });
-
-                // // fix the header column order
-                // $('thead tr th:last', settings.nTable).prependTo($('thead tr', settings.nTable));
-
-                // // trigger table init event
-                // $this.trigger("InitComplete");
-            },
-            rowCallback: function(row, data) {
-                var rsc_data = data;
-                    rsc_data.details = [];
-
-                // set resource details
-                rsc_data.details.push( data.application.name + ' / ' + data.type.name + ' / ' + data.id );
-                rsc_data.details.push( data.created );
-
-                // add Author if known
-                if (data.author.name) rsc_data.details.push({name: $this._('AUTHOR'), value: data.author.name});
-            
-                var resource = ZX.managerResource(row, rsc_data);
-                resource.pushData(rsc_data);
-
-                // set resource dom properties
-                resource.element.addClass('zx-manager-resource');
-
-                // fix the column order
-                // $('td:last', resource.element).prependTo(resource.element);
-
-                // reset and append the resource data
-                $('.zx-manager-resource-name', resource.element).html('').append(
-                    // render the resource content
-                    resource.render()
-                );
-            },
-            preDrawCallback: function(settings) {
-                // show processing
-                // $this.zluxdialog.spinner('show');
-
-                // trigger event
-                // $this.trigger("DTPreDrawCallback", oSettings);
-            },
-            drawCallback: function(settings) {
-                // pagination hide/show
-                // var oPaging = oSettings.oInstance.fnPagingInfo(),
-                //     pagination = $('.dataTables_paginate', $(oSettings.nTableWrapper)).closest('.row-fluid');
-                
-                // // hide/show the pagination
-                // if (oPaging.iTotalPages <= 1) pagination.hide(); else pagination.show();
-
-                // // update dialog scrollbar
-                // $this.zluxdialog.scrollbar('refresh');
-
-                // // hide processing
-                // $this.zluxdialog.spinner('hide');
-
-                // // trigger event
-                // $this.trigger("TableDrawCallback", oSettings);
-            }
-        },
-
-        ajax: function (data, callback, settings) {
-            var $this = this,
-
-            // determine what filter values to use
-            apps = $this.filter.apps ? $this.filter.apps : $this.options.apps,
-            types = $this.filter.types ? $this.filter.types : $this.options.types,
-            cats = $this.filter.cats ? $this.filter.cats : $this.options.categories,
-            tags = $this.filter.tags ? $this.filter.tags : $this.options.tags,
-            authors = $this.filter.authors ? $this.filter.authors : $this.options.authors;
-
-            // push the preset filter values
-            data.apps = $this.options.apps;
-            data.types = $this.options.types;
-            data.categories = $this.options.categories;
-            data.tags = $this.options.tags;
-            data.authors = $this.options.authors;
-
-            // push the new filter values
-            data.filter_apps = apps;
-            data.filter_types = types;
-            data.filter_cats = cats;
-            data.filter_tags = tags;
-
-            // specify zlux version
-            data.zlux2 = true;
-
-            // save draw value
-            var draw = data.draw;
-
-            // hash the request data
-            data.draw = 0;
-            var hash = String($.param(data)).hashCode();
-
-            // if request cached, use instead and abort ajax
-            if (false && cache[hash]) {
-                cache[hash].draw = draw;
-
-                callback( cache[hash] );
-                return;
-            }
-
-            // recover draw value
-            data.draw = draw;
-
-            // request
-            ZX.ajax.requestAndNotify({
-                url: ZX.url.get('ajax:', {controller: 'zlux', task: 'getItemsManagerData'}),
-                data: data,
-                queue: 'itemsmanager'
-            })
-
-            .done(function (json) {
-
-                // cache the retrieved data
-                cache[hash] = json;
-
-                // redraw
-                callback(json);
-            });
-        },
-
-        /**
-         * Reload the data from source and redraw
-         */
-        reload: function() {
-            var $this = this;
-
-            // reload
-            $this.resources.DataTable().ajax.reload();
-        },
-
-        preResourceDelete: function(resource, request) {
-            var $this = this;
-
-            // adapt request
-        }
-    };
-
-
-    ZX.component('itempicker', $.extend(true, {}, itemsManagerSettings, ZX.components.managerDropdown, {
-
-        init: function() {
-            var $this = this;
-
-            // init functions
-            itemsManagerSettings.init.apply(this);
-            ZX.components.managerDropdown.init.apply(this);
-
-            this.on("click", function(){
-               if(active!==$this) $this.pick(this.value);
-            });
-
-            // init dropdown
-            dropdown = this.initDropdown(dropdown).addClass('zx-itempicker');
-        },
-
-        DTsettings: {
-            ordering: false,
-            columns:
-            [
-                {
-                    title: '', data: '_itemname', class: 'zx-x-main-column uk-width-1-1',
-                    render: function (data, type) {
-                        return type === 'display' ? '' : data;
-                    }
-                }
-            ],
-            rowCallback: function(row, data) {
-                var rsc_data = data;
-                    rsc_data.details = [];
-
-                // set resource details
-                rsc_data.details.push( data.application.name + ' / ' + data.type.name + ' / ' + data.id );
-            
-                var resource = ZX.managerResource(row, rsc_data);
-                resource.pushData(rsc_data);
-
-                // set resource dom properties
-                resource.element.addClass('zx-manager-resource');
-
-                // append the resource data
-                $('.zx-x-main-column', resource.element).append(
-                    resource.render()
-                );
-            }
-        },
-
-        pick: function(inititem) {
-           ZX.components.managerDropdown.pick.apply(this, [inititem]);
-
-           active = this;
-        },
-    }));
-
-    // init code
-    $(document).on("focus.itempicker.zlux", "[data-zx-itempicker]", function(e) {
-        var ele = $(this);
-
-        if (!ele.data("itempicker")) {
-            e.preventDefault();
-            var obj = ZX.itempicker(ele, $.UIkit.Utils.options(ele.attr("data-zx-itempicker")));
-            ele.trigger("focus");
-        }
-    });
-
-    $(document).on("click.itempicker.zlux", function(e) {
-        var target = $(e.target);
-
-        if (active && target[0] != dropdown[0] && !target.data("itempicker") && !target.parents(".zx-itempicker:first").length) {
-            dropdown.hide();
-            active = false;
-        }
-    });
-
-    // init code
-    $(document).on("uk-domready", function(e) {
-        $("[data-zx-itempicker]").each(function() {
-            var ele = $(this);
-
-            if (!ele.data("itempicker")) {
-                var obj = ZX.itempicker(ele, $.UIkit.Utils.options(ele.attr("data-zx-itempicker")));
-            }
-        });
-    });
-
-})(jQuery, jQuery.zlux, window, document);
+})(jQuery, jQuery.zx, window, document);
