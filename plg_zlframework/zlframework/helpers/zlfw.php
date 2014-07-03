@@ -285,10 +285,12 @@ class zlfwHelper extends AppHelper {
 
 	/**
 	 * checkToken - check for request forgeries
+	 *
+	 * @param bool Force check through get
 	 */
-	public function checkToken()
+	public function checkToken($force_get = false)
 	{
-		if($this->app->request->get('format', 'string', '') === 'raw') {
+		if($force_get || $this->app->zlfw->request->isAjax()) {
 			$this->app->session->checkToken('get') or jexit('Invalid Token');		
 		} else {
 			$this->app->session->checkToken() or jexit('Invalid Token');		
