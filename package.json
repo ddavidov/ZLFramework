@@ -8,7 +8,9 @@
 		"grunt-contrib-uglify": "~0.2.2",
 		"grunt-replacer": "~0.1",
 		"grunt-contrib-compress": "~0.5.2",
-		"grunt-contrib-clean": "~0.5.0"
+		"grunt-contrib-clean": "~0.5.0",
+		"grunt-curl": "~2.0.2",
+		"grunt-zip": "~0.15.0"
 	},
 	"plugin": {
 		"name": "ZL Framework",

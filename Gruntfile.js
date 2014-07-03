@@ -5,49 +5,50 @@ module.exports = function(grunt) {
 
 		// Metadata
 		meta: {
-			pluginPath: 'plg_zlframework/',
-			buildPath: 'build/'
+			pluginPath: 'plg_zlframework',
+			buildPath: 'build'
 		},
 
-		// copy Plugin folder to Build folder
+		
 		copy: {
+
+			// copy content to Build folder
 			main: {
 				files: [
-					{expand: true, cwd: '<%= meta.pluginPath %>', src: ['**'], dest: '<%= meta.buildPath %>'} // makes all src relative to cwd
+					{expand: true, cwd: '<%= meta.pluginPath %>', src: ['**'], dest: '<%= meta.buildPath %>/<%= meta.pluginPath %>'}
 				]
 			},
 
-			// save JS scripts as dev uncompressed versions
+			// save ZLUX 1.0 JS scripts as dev uncompressed versions
 			dev: {
 				files: [
 					{
 						expand: true, 
-						cwd: '<%= meta.buildPath %>', 
+						cwd: '<%= meta.buildPath %>/<%= meta.pluginPath %>', 
 						src: [
 							'**/zlframework/zlux/**/*.js', // all ZLUX plugins
 							'!**/*zlux/assets/**/*.js' // discart assets
 						],
-						dest: '<%= meta.buildPath %>',
+						dest: '<%= meta.buildPath %>/<%= meta.pluginPath %>',
 						ext: '.dev.js'
+					}
+				]
+			},
+
+			// copy zlux to vendor folder
+			zlux: {
+				files: [
+					{
+						expand: true,
+						cwd: '<%= meta.buildPath %>/zlux/zlux-master/dist', 
+						src: ['**'], 
+						dest: '<%= meta.pluginPath %>/zlframework/vendor/zlux'
 					}
 				]
 			}
 		},
-
-		// JSHint
-		jshint: {
-			// configure JSHint (documented at http://www.jshint.com/docs/)
-			options: {
-				// more options here if you want to override JSHint defaults
-				globals: {
-					jQuery: true
-				}
-			},
-			// define the files to lint
-			files: ['<%= meta.pluginPath %>zlframework/zlux/zluxMain.js'],
-		},
 				
-		// compress the JS files
+		// compress JS files
 		uglify: {
 			options: {
 				banner: '/* ===================================================\n' +
@@ -62,30 +63,30 @@ module.exports = function(grunt) {
 				files: [
 					{
 						expand: true, 
-						cwd: '<%= meta.buildPath %>', 
+						cwd: '<%= meta.buildPath %>/<%= meta.pluginPath %>', 
 						src: [
 							'**/zlframework/**/*.js', // all js
 							'!**/*.min.js', // discart min versions
 							'!**/vendor/**/*.js' // discart vendor folder
 						],
-						dest: '<%= meta.buildPath %>'
+						dest: '<%= meta.buildPath %>/<%= meta.pluginPath %>'
 					}
 				]
 			}
 		},
 
-		// replacer
-		replacer: {
+		// download a file
+		curl: {
+			zlux: {
+				src: 'https://github.com/JOOlanders/zlux/archive/master.zip',
+				dest: '<%= meta.buildPath %>/zlux/master.zip'
+			}
+		},
 
-			// main XML
-			xml: {
-				options: {
-					replace: {
-						'<!-- VERSION -->' : '<%= pkg.plugin.version %>'
-					}
-				},
-				src: 'plg_zlframework/zlframework.xml',
-				dest: 'build/zlframework.xml'
+		unzip: {
+			zlux: {
+				src: '<%= meta.buildPath %>/zlux/master.zip',
+				dest: '<%= meta.buildPath %>/zlux'
 			}
 		},
 
@@ -93,17 +94,21 @@ module.exports = function(grunt) {
 		compress: {
 			main: {
 				options: {
-					archive: 'plg_zlframework.zip', // .tar.gz, .zip
+					archive: '<%= meta.buildPath %>/plg_zlframework.zip', // .tar.gz, .zip
 					mode: 'zip' // tgz, zip
 				},
 				files: [
-					{expand: true, cwd: '<%= meta.buildPath %>', src: ['**'], dest: '/'} // makes all src relative to cwd
+					{expand: true, cwd: '<%= meta.buildPath %>/<%= meta.pluginPath %>', src: ['**'], dest: '/'} // makes all src relative to cwd
 				]
 			}
 		},
 
 		// remove temporal build files
-		clean: ['<%= meta.buildPath %>']
+		clean: {
+			target: {
+				src: ['<%= meta.buildPath %>/<%= meta.pluginPath %>']
+			}
+		}
 	});
 
 	// load in Grunt plugins
@@ -113,11 +118,32 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-replacer');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-curl');
+	grunt.loadNpmTasks('grunt-zip');
 
 	// register tasks
-	grunt.registerTask('default', ['copy', 'uglify', 'compress', 'clean']);
+	grunt.registerTask('default', ['clean', 'copy:main', 'copy:dev', 'uglify', 'compress']);
 
-	grunt.registerTask('test', ['replacer']);
-	grunt.registerTask('min', ['uglify']);
+	grunt.registerTask('zlux', 'Update vendor zlux', function(repo) {
 
+		// set default repository
+		repo = repo === undefined ? 'master' : repo;
+
+		// clean paths
+		grunt.config('clean.target.src', 'plg_zlframework/zlframework/vendor/zlux');
+		grunt.task.run('clean:target');
+
+		grunt.config('clean.target.src', 'build/zlux');
+		grunt.task.run('clean:target');
+
+		// download zlux
+		grunt.config('curl.zlux.src', 'https://github.com/JOOlanders/zlux/archive/'+repo+'.zip');
+		grunt.task.run('curl:zlux');
+		
+		// unzip it
+		grunt.task.run('unzip:zlux');
+
+		// copy contents
+		grunt.task.run('copy:zlux');
+	});
 };
