@@ -1650,7 +1650,9 @@
 			}
 
 			// if Image Resize
-			if(!$.isEmptyObject($this.options.resize)) {
+			if(!$.isEmptyObject($this.options.resize) &&
+				($this.options.resize.width !== '' || $this.options.resize.height !== '')) {
+
 				$.extend(params, {
 					resize: {
 						width: $this.options.resize.width,
