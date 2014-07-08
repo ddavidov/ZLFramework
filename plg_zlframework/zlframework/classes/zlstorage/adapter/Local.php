@@ -279,7 +279,8 @@ class ZLStorageAdapterLocal extends ZLStorageAdapterBase implements ZLStorageAda
 			$obj['size']['display'] = $this->app->zlfw->filesystem->formatFilesize($obj['size']['value'], 'KB');
 
 			// if image
-			if (strpos($obj['content_type'], 'image/') !== false) {
+			if (strpos($obj['content_type'], 'image/') !== false 
+					&& $obj['size']['value'] != 0) {
 				$imageinfo = getimagesize($fullpath);
 				$obj['resolution'] = $imageinfo[0].'x'.$imageinfo[1].'px';
 			}
