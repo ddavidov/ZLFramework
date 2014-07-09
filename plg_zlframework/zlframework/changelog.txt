@@ -1,6 +1,15 @@
 Changelog
 ------------
 
+3.1.18
+ + ZLUX 2.0
+ + Request Helper
+ + Lang strings
+ ^ FilesManager: don't try to resize if no size params
+ ^ ZL Menu Item field improved making no more necessary to "save twice"
+ # Item Model bug fix
+ # Minor bugs fixed
+
 3.1.17
  ^ Plupload updated to v2.1.2
  ^ Bug fixes
