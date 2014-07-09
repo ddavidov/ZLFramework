@@ -36,7 +36,7 @@ jQuery(document).ready(function($){
 });");
 
 // get the list of extensions
-$exts = $this->app->event->dispatcher->notify($this->app->event->create(null, 'zoolanders:joomlaMenuItems'))->getReturnValue();
+$exts = $this->app->event->dispatcher->notify($this->app->event->create(null, 'zoolanders:joomlamenuitems'))->getReturnValue();
 
 // get the selected view
 $selectedView = null;
