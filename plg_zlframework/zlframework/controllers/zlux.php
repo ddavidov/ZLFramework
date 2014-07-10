@@ -299,6 +299,7 @@ class ZluxController extends AppController {
 
 	public function _getItemsManagerData()
 	{
+		// init vars
 		$s_apps	 	= explode(',', $this->app->request->get('apps', 'string', ''));
 		$s_types	= explode(',', $this->app->request->get('types', 'string', ''));
 		$s_cats		= explode(',', $this->app->request->get('categories', 'string', ''));
@@ -309,7 +310,7 @@ class ZluxController extends AppController {
 		$g_types 	= explode(',', $this->app->request->get('filter_types', 'string', ''));
 		$g_cats		= explode(',', $this->app->request->get('filter_cats', 'string', ''));
 		$g_tags		= explode(',', $this->app->request->get('filter_tags', 'string', ''));
-		$sEcho	 	= $this->app->request->get('sEcho', 'integer', false);
+		$sEcho	 	= $this->app->request->get('sEcho', 'string', '');
 
 		/* Array of database columns which should be read and sent back to DataTables. Use a space where
 		   you want to insert a non-database field (for example a counter or static image) */
@@ -350,9 +351,6 @@ class ZluxController extends AppController {
 		// get model
 		$model = $this->app->zlmodel->getNew('item');
 		$model->setState('select', 'DISTINCT a.*');
-
-		// get total items
-		$total = $model->getTotal();
 
 		// get all Apps object
 		$apps =  $this->app->table->application->all();
@@ -438,10 +436,10 @@ class ZluxController extends AppController {
 		$aOrder = array_values($aOrder);
 		$model->setState('order_by', $aOrder);
 
-
 		// paging
 		if ( isset( $_POST['iDisplayStart'] ) && $_POST['iDisplayLength'] != '-1' )
 		{
+
 			$model->setState('limitstart', $_POST['iDisplayStart'], true);
 			$model->setState('limit', $_POST['iDisplayLength'], true);
 		}
@@ -467,8 +465,13 @@ class ZluxController extends AppController {
 			}
 		}
 
-		// debug sql
-		// dump($model->getQuery()->__toString());
+		// pretty print of sql
+		if (false) {
+			$find = Array("FROM", "WHERE", "AND", "ORDER BY", "LIMIT", "OR");
+			$replace = Array(" FROM", " WHERE", " AND", " ORDER BY", " LIMIT", " OR");
+			$in = $model->getQuery();
+			// dump(str_replace($find, $replace, $in));
+		}
 
 		// get items
 		$rows = array();
