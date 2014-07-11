@@ -1,6 +1,9 @@
 Changelog
 ------------
 
+3.1.19
+ # Fixed ZLUX 1 ItemsManager pagination/filtering
+
 3.1.18
  + ZLUX 2.0
  + Request Helper
