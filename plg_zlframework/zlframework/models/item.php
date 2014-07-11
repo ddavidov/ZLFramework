@@ -324,6 +324,12 @@ class ZLModelItem extends ZLModel
 		// init vars
 		$this->apps  = $this->getState('application', array());
 		$this->types = $this->getState('type', array());
+		$elements = $this->getState('element', array());
+
+		// if no filter data, abort
+		if(empty($this->apps) && empty($this->types) && empty($elements)) {
+			return array();
+		}
 
 		// convert apps into raw array
 		if (count($this->apps)) foreach ($this->apps as $key => $app) {
