@@ -95,7 +95,7 @@ jQuery(function($){
 					var data = $('<div class="ui-content-wrapper" />').append(data),
 						title = data.find('.pos-title') || data.find('.sub-pos-title');
 					data.find('.pos-title, .sub-pos-title').remove();
-					options.content.title.text = (<?php echo (int)($lparams->find('qtip._title') == 'loadeditemname'); ?> && title.html()) || '<?php echo $title ?>';
+					options.content.title.text = (<?php echo (int)($lparams->find('qtip._title') == 'loadeditemname'); ?> && title.html()) || '<?php echo addslashes($title) ?>';
 					options.content.text = data;
 					
 					// destroy current and create new updated qtip
