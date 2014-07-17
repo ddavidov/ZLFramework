@@ -60,6 +60,13 @@ class zlfwHelperEnviroment extends AppHelper {
 		// set component
 		$enviroment[] = $component;
 
+		// if ZOOlanders
+		if ($component == 'com_zoolanders' && $view == 'extension') {
+			if ($menu = $this->app->menu->getActive())
+				$enviroment[] = $menu->params->get('extension')->name;
+			unset($view);
+		}
+
 		// set controller
 		$enviroment[] = $this->app->request->getCmd('controller', null);
 
