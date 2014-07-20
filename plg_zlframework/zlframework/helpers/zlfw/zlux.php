@@ -97,7 +97,7 @@ class zlfwHelperZlux extends AppHelper {
 			// set loaded state
 			$this->_zlux2_loaded = true;
 
-		} else if(!$this->_zlux1_loaded) {
+		} else if(!$zlux2 && !$this->_zlux1_loaded) {
 
 			// zlux assets
 			$this->app->document->addStylesheet('zlfw:zlux/zluxMain.css');
