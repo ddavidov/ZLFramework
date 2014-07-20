@@ -14,7 +14,7 @@
         return ZX;
     }
 
-    ZX.version = '2.0';
+    ZX.version = '2.0.1';
 
 
     /** URI **/
@@ -283,12 +283,13 @@
         };
 
         fn.plugins = {};
+        fn.instances = [];
 
         $.extend(true, fn.prototype, {
 
             type: 'component',
 
-            defaults : {plugins: []},
+            defaults: {plugins: []},
 
             init: function(){},
 
@@ -433,7 +434,7 @@
         var args = arguments, cmd = command.match(/^([a-z\-]+)(?:\.([a-z]+))?/i), extension = cmd[1], method = cmd[2];
 
         if (!ZX[extension]) {
-            $.error("UIkit extension [" + extension + "] does not exist.");
+            $.error("ZLUX extension [" + extension + "] does not exist.");
             return this;
         }
 
@@ -448,7 +449,10 @@
                 data = $this.data(extension);
 
                 // if no instance, init it
-                if (!data) $this.data(extension, (data = ZX[extension](this, method ? undefined : options)));
+                if (!data) {
+                    $this.data(extension, (data = ZX[extension](this, method ? undefined : options)));
+                    ZX.extensions[extension].instances.push(data);
+                }
 
                 // if method provided, execute it
                 if (method) data[method].apply(data, Array.prototype.slice.call(args, 1));
