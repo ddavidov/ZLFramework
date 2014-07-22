@@ -1,6 +1,12 @@
 Changelog
 ------------
 
+3.1.20
+ ^ ZLUX updated to 2.0.1
+ ^ ItemModel performance improvements
+ + Environment Helper compatibility with ZL Component Extension view
+ # Minor bugs fixed
+
 3.1.19
  # Fixed ZLUX 1 ItemsManager pagination/filtering
 
