@@ -985,6 +985,83 @@ final class AEUtilsS3Request
 		$this->amzHeaders[$key] = $value;
 	}
 
+	/**
+	 * Deal with curl issues when open_basedir or safe mode is set
+	 */
+	protected function curl(&$curl, $verb = 'GET'){
+		
+		//follow on location problems
+		if ((@ini_get('open_basedir') == '' && @ini_get('safe_mode' == 'Off')) || !in_array($verb, array('GET', 'POST', 'PUT'))){
+			@curl_setopt ($curl, CURLOPT_FOLLOWLOCATION,true);
+			$syn = curl_exec($curl);
+		} else{
+			$syn = $this->curl_redir_exec($curl);
+		}
+
+		return $syn;
+	}
+
+	// Special custom follow redirect in curl
+	protected function curl_redir_exec(&$ch)
+	{
+		$this->curl_loops = 0;
+		$this->curl_max_loops = 20;
+
+		if ($this->curl_loops++ >= $this->curl_max_loops) {
+			$this->curl_loops = 0;
+			return false;
+		}
+
+		curl_setopt($ch, CURLOPT_HEADER, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$data = curl_exec($ch);
+
+		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$header = substr($data, 0, $header_size);
+		$data = substr($data, $header_size);
+
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		if ($http_code == 301 || $http_code == 302) {
+			$matches = array();
+			preg_match('/Location:(.*?)\n/', $header, $matches);
+			$url = @parse_url(trim(array_pop($matches)));
+			
+			if (!$url) {
+				//couldn't process the url to redirect to
+				$this->curl_loops = 0;
+				return $data;
+			}
+			
+			$last_url = parse_url(curl_getinfo($ch, CURLINFO_EFFECTIVE_URL));
+
+			if (!$url['scheme']) {
+				$url['scheme'] = $last_url['scheme'];
+			}
+
+			if (!$url['host']) {
+				$url['host'] = $last_url['host'];
+			}
+
+			if (!$url['path']) {
+				$url['path'] = $last_url['path'];
+			}
+
+			$new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . ($url['query']?'?'.$url['query']:'');
+
+			curl_setopt($ch, CURLOPT_URL, $new_url);
+
+			return curl_redir_exec($ch);
+
+		} else {
+			$this->curl_loops = 0;
+			$this->__responseHeaderCallback($curl, $header);
+			$this->__responseWriteCallback($curl, $data);
+			return $data;
+		}
+	}
+
 
 	/**
 	* Get the S3 response
@@ -1058,7 +1135,6 @@ final class AEUtilsS3Request
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
 		curl_setopt($curl, CURLOPT_WRITEFUNCTION, array(&$this, '__responseWriteCallback'));
 		curl_setopt($curl, CURLOPT_HEADERFUNCTION, array(&$this, '__responseHeaderCallback'));
-		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
 		// Request types
 		switch ($this->verb) {
@@ -1087,8 +1163,10 @@ final class AEUtilsS3Request
 			default: break;
 		}
 
+		$response = $this->curl($curl, $this->verb);
+
 		// Execute, grab errors
-		if (curl_exec($curl))
+		if ($response)
 			$this->response->code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		else
 			$this->response->error = array(
