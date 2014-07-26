@@ -122,7 +122,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-zip');
 
 	// register tasks
-	grunt.registerTask('default', ['clean', 'copy:main', 'copy:dev', 'uglify', 'compress']);
+	grunt.registerTask('default', ['clean', 'copy:main', 'copy:dev', 'compress']);
+
+	grunt.registerTask('dist', ['clean', 'copy:main', 'copy:dev', 'uglify', 'compress']);
 
 	grunt.registerTask('zlux', 'Update vendor zlux', function(repo) {
 
