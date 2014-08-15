@@ -1,6 +1,12 @@
 Changelog
 ------------
 
+3.1.21
+ ^ Environment Helper name typo fixed
+ # Item Model fix: range empty values
+ # Amazon S3 fixes for open_basedir or safe mode enabled servers
+ # Installer lang issue fixed
+
 3.1.20
  ^ ZLUX updated to 2.0.1
  ^ ItemModel performance improvements
