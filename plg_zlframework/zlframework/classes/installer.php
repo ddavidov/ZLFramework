@@ -172,7 +172,7 @@ abstract class zlInstallerScript
 			$joomla_release = new JVersion();
 			$joomla_release = $joomla_release->getShortVersion();
 			if( version_compare( (string)$joomla_release, $min_v, '<' ) ) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_OUTDATED'), $this->ext_name, 'http://www.joomla.org', 'Joomla!', $min_v);
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_OUTDATED', $this->ext_name, 'http://www.joomla.org', 'Joomla!', $min_v);
 				return false;
 			}
 		}
@@ -183,7 +183,7 @@ abstract class zlInstallerScript
 			// if installed and enabled
 			if (!JFile::exists(JPATH_ADMINISTRATOR.'/components/com_zoo/config.php')
 				|| !JComponentHelper::getComponent('com_zoo', true)->enabled) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_MISSING'), $this->ext_name, 'http://www.yootheme.com/zoo', 'ZOO');
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_MISSING', $this->ext_name, 'http://www.yootheme.com/zoo', 'ZOO');
 				return false;
 			}
 
@@ -191,7 +191,7 @@ abstract class zlInstallerScript
 			$zoo_manifest = simplexml_load_file(JPATH_ADMINISTRATOR.'/components/com_zoo/zoo.xml');
 
 			if( version_compare((string)$zoo_manifest->version, $min_v, '<') ) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_OUTDATED'), $this->ext_name, 'http://www.yootheme.com/zoo', 'ZOO', $min_v);
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_OUTDATED', $this->ext_name, 'http://www.yootheme.com/zoo', 'ZOO', $min_v);
 				return false;
 			}
 		}
@@ -202,7 +202,7 @@ abstract class zlInstallerScript
 			// if installed and enabled
 			if (!JFile::exists(JPATH_ADMINISTRATOR.'/components/com_zoolanders/zoolanders.php')
 				|| !JComponentHelper::getComponent('com_zoolanders', true)->enabled) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_MISSING'), $this->ext_name, 'https://www.zoolanders.com/extensions/zoolanders', 'ZOOlanders Component');
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_MISSING', $this->ext_name, 'https://www.zoolanders.com/extensions/zoolanders', 'ZOOlanders Component');
 				return false;
 			}
 
@@ -210,7 +210,7 @@ abstract class zlInstallerScript
 			$zl_manifest = simplexml_load_file(JPATH_ADMINISTRATOR.'/components/com_zoolanders/zoolanders.xml');
 
 			if( version_compare((string)$zl_manifest->version, $min_v, '<') ) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_OUTDATED'), $this->ext_name, 'https://www.zoolanders.com/extensions/zoolanders', 'ZOOlanders Component', $min_v);
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_OUTDATED', $this->ext_name, 'https://www.zoolanders.com/extensions/zoolanders', 'ZOOlanders Component', $min_v);
 				return false;
 			}
 		}
@@ -220,7 +220,7 @@ abstract class zlInstallerScript
 		{
 			// if installed and enabled
 			if (!JPluginHelper::getPlugin('system', 'zlframework')) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_MISSING'), $this->ext_name, 'https://www.zoolanders.com/extensions/zl-framework', 'ZL Framework');
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_MISSING', $this->ext_name, 'https://www.zoolanders.com/extensions/zl-framework', 'ZL Framework');
 				return false;
 			}
 
@@ -228,7 +228,7 @@ abstract class zlInstallerScript
 			$zlfw_manifest = simplexml_load_file(JPATH_ROOT.'/plugins/system/zlframework/zlframework.xml');
 
 			if( version_compare((string)$zlfw_manifest->version, $min_v, '<') ) {
-				$this->_error = JText::sprintf($this->langString('_DEPENDENCY_OUTDATED'), $this->ext_name, 'https://www.zoolanders.com/extensions/zl-framework', 'ZL Framework', $min_v);
+				$this->_error = JText::sprintf('PLG_ZLFRAMEWORK_SYS_DEPENDENCY_OUTDATED', $this->ext_name, 'https://www.zoolanders.com/extensions/zl-framework', 'ZL Framework', $min_v);
 				return false;
 			}
 		}

@@ -94,7 +94,7 @@ class ZlfieldHelper extends AppHelper {
 		}
 		
 		// get params
-		if($this->app->zlfw->enviroment->is('admin.com_widgetkit'))
+		if($this->app->zlfw->environment->is('admin.com_widgetkit'))
 			$this->initWidgetkitMode();
 		else if($this->mode == 'edit')
 			$this->initEditMode();

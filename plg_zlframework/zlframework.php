@@ -171,7 +171,7 @@ class plgSystemZlframework extends JPlugin {
 	public function checkInstallation()
 	{
 		// if in admin views
-		if ($this->app->zlfw->enviroment->is('admin.com_zoo admin.com_installer admin.com_plugins'))
+		if ($this->app->zlfw->environment->is('admin.com_zoo admin.com_installer admin.com_plugins'))
 		{
 			return $this->_checkDependencies();
 		}
@@ -195,7 +195,7 @@ class plgSystemZlframework extends JPlugin {
 		if (!$status['state']){
 
 			// warn but not if in installer to avoid install confusions
-			if (!$this->app->zlfw->enviroment->is('admin.com_installer'))
+			if (!$this->app->zlfw->environment->is('admin.com_installer'))
 				$this->app->zlfw->dependencies->warn($status['extensions']);
 		}
 
