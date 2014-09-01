@@ -71,13 +71,15 @@ defined('_JEXEC') or die('Restricted access');
 		// filter orderable elements
 		$elements = array_filter($elements, create_function('$element', 'return $element->getMetaData("orderable") == "true";'));
 
+		// set core options
 		$options = array();
-		foreach ($elements as $element) {
-			$options[$element->config->name ? $element->config->name : $element->getMetaData('name')] = $element->identifier;
+
+		if ($node->get('add_default')) {
+			$options[''] = JText::_('default');
 		}
 		
-		if ($node->get('add_default')) {
-			array_unshift($options, array(JText::_('default') => ''));
+		foreach ($elements as $element) {
+			$options[$element->config->name ? $element->config->name : $element->getMetaData('name')] = $element->identifier;
 		}
 
 		$json[] =
