@@ -336,6 +336,9 @@ class plgSystemZlframeworkInstallerScript
 	 */
 	protected function checkCompatibility($file)
 	{
+		// load config
+		require_once(JPATH_ADMINISTRATOR.'/components/com_zoo/config.php');
+
 		// set zoo app instance
 		$this->app = App::getInstance('zoo');
 
