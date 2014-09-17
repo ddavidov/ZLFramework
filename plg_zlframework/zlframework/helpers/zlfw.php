@@ -344,7 +344,7 @@ class zlfwHelper extends AppHelper {
 		return $result;
 	}
 
-	/* depricated name */
+	/* deprecated name */
 	public function getAppsObject($apps, $all = false, $group = null){
 		return $this->getApplications($apps, $all, $group);
 	}
