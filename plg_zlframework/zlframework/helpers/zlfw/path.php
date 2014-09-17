@@ -70,6 +70,34 @@ class zlfwHelperPath extends PathHelper {
 		return $widgetkit['path']->path($resource);
 	}
 
+	/**
+	 * Check paths to system logs and tmp folders
+	 *
+	 * @return string   If check failed warning message will be returned
+	 */
+	public function checkSystemPaths(){
+		$app = JFactory::getApplication();
+		$suspect = array();
+
+		$real_tmp_path = $app->getCfg('tmp_path');
+		$tmp_expect = JPATH_SITE.'/tmp';
+		if(($real_tmp_path != $tmp_expect) || !file_exists($real_tmp_path) || !is_writable($real_tmp_path)){
+			$suspect[] = 'tmp';
+		}
+
+		$real_logs_path = $app->getCfg('log_path');
+		$logs_expect = JPATH_SITE.'/logs';
+		if(($real_logs_path != $logs_expect) || !file_exists($real_logs_path) || !is_writable($real_logs_path)){
+			$suspect[] = 'logs';
+		}
+
+		if(!empty($suspect)){
+			return JText::sprintf('PLG_ZLFRAMEWORK_SYSTEM_FOLDER_SUSPECT', implode(',', $suspect));
+		}else{
+			return null;
+		}
+	}
+
 	public function pathZOO($resource)
 	{
 		return $this->app->path->path($resource);
