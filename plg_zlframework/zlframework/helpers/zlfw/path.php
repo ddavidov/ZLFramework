@@ -86,9 +86,9 @@ class zlfwHelperPath extends PathHelper {
 		}
 
 		$real_logs_path = $app->getCfg('log_path');
-		$logs_expect = JPATH_SITE.'/logs';
+		$logs_expect = JPATH_SITE.'/log';
 		if(($real_logs_path != $logs_expect) || !file_exists($real_logs_path) || !is_writable($real_logs_path)){
-			$suspect[] = 'logs';
+			$suspect[] = 'log';
 		}
 
 		if(!empty($suspect)){
