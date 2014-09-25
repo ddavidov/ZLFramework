@@ -77,22 +77,16 @@ class zlfwHelperPath extends PathHelper {
 	 */
 	public function checkSystemPaths(){
 		$app = JFactory::getApplication();
-		$suspect = array();
+		$suspect = false;
 
 		$real_tmp_path = $app->getCfg('tmp_path');
 		$tmp_expect = JPATH_SITE.'/tmp';
 		if(($real_tmp_path != $tmp_expect) || !file_exists($real_tmp_path) || !is_writable($real_tmp_path)){
-			$suspect[] = 'tmp';
+			$suspect = true;
 		}
 
-		$real_logs_path = $app->getCfg('log_path');
-		$logs_expect = JPATH_SITE.'/log';
-		if(($real_logs_path != $logs_expect) || !file_exists($real_logs_path) || !is_writable($real_logs_path)){
-			$suspect[] = 'log';
-		}
-
-		if(!empty($suspect)){
-			return JText::sprintf('PLG_ZLFRAMEWORK_SYSTEM_FOLDER_SUSPECT', implode(',', $suspect));
+		if($suspect){
+			return JText::sprintf('PLG_ZLFRAMEWORK_SYSTEM_FOLDER_SUSPECT');
 		}else{
 			return null;
 		}
@@ -108,7 +102,7 @@ class zlfwHelperPath extends PathHelper {
 	 *
 	 * Original Credits:
 	 * @package   	JCE
-	 * @copyright 	Copyright ¬© 2009-2011 Ryan Demmer. All rights reserved.
+	 * @copyright 	Copyright © 2009-2011 Ryan Demmer. All rights reserved.
 	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 	 * 
 	 * Extended and adapted:
