@@ -14,7 +14,7 @@
         return ZX;
     }
 
-    ZX.version = '2.0.1';
+    ZX.version = '2.0.2';
 
 
     /** URI **/
@@ -54,7 +54,7 @@
             .replace(new RegExp('^\/'+root_path, 'g'), '');
 
         } else {
-            result = url[0] + ($.isEmptyObject(params) ? '' : '&' + $.param(params));
+            result = ZX.url._get(url[0]) + ($.isEmptyObject(params) ? '' : '&' + $.param(params));
         }
 
         return ZX.url.clean(result);
