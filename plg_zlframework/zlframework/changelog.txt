@@ -1,6 +1,10 @@
 Changelog
 ------------
 
+3.2.1
+ ^ ZLUX updated to 2.0.2
+ ^ Core improvements
+
 3.2
  # ZLField ItemOrder add_default fix
  # Fixed Item Model logic issue when cross App filtering
