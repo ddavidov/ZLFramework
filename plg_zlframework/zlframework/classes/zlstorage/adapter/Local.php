@@ -128,7 +128,13 @@ class ZLStorageAdapterLocal extends ZLStorageAdapterBase implements ZLStorageAda
 		} else if (is_file($_src)) {
 			$result = JFile::move($src, $dest, $this->app->path->path('root:'));
 		} else if (is_dir($_src)) {
-			$result = JFolder::move($src, $dest, $this->app->path->path('root:'));
+			//if the item directory exists
+			if ($this->exists($dest)) {
+				$result = JFolder::copy($src, $dest, $this->app->path->path('root:'), true);
+				$result = $result ? JFolder::delete($src) : $result;
+			} else {
+				$result = JFolder::move($src, $dest, $this->app->path->path('root:'));
+			}
 		}
 
 		// if something went wrong, report
