@@ -547,8 +547,8 @@ class ZLModelItem extends ZLModel
 		$value      = $element->get('value');
 		$logic      = strtoupper($element->get('logic', 'AND'));
 		$mode       = $element->get('mode', 'AND');
-		$from       = $element->get('from', false);
-		$to         = $element->get('to', false);
+		$from       = $element->get('from', null);
+		$to         = $element->get('to', null);
 		$convert    = $element->get('convert', 'DECIMAL');
 		$type       = $element->get('type', false);
 
