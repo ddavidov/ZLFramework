@@ -77,19 +77,27 @@ class zlfwHelperPath extends PathHelper {
 	 */
 	public function checkSystemPaths(){
 		$app = JFactory::getApplication();
-		$suspect = false;
 
 		$real_tmp_path = $app->getCfg('tmp_path');
 		$tmp_expect = JPATH_SITE.'/tmp';
-		if(($real_tmp_path != $tmp_expect) || !file_exists($real_tmp_path) || !is_writable($real_tmp_path)){
-			$suspect = true;
-		}
 
-		if($suspect){
+		if(!$this->checkPathAccessible($real_tmp_path) && !$this->checkPathAccessible($tmp_expect)){
 			return JText::sprintf('PLG_ZLFRAMEWORK_SYSTEM_FOLDER_SUSPECT');
 		}else{
 			return null;
 		}
+	}
+
+	/**
+	 * Check that specified path is accessible and writable on the server
+	 *
+	 * @param $path
+	 *
+	 * @return bool
+	 */
+	public function checkPathAccessible($path){
+
+		return file_exists($path) && is_writable($path);
 	}
 
 	public function pathZOO($resource)
