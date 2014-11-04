@@ -88,7 +88,7 @@
 					"sInfoEmpty": ""
 				},
 				"sAjaxUrl": $.zlux.url.ajax('zlux'),
-				"sAjaxSource": $.zlux.url.ajax('zlux', 'getFilesManagerData'),
+				"sAjaxSource": $.zlux.url.ajax('zlux', 'getManagerFilesData'),
 				"sServerMethod": "POST",
 				"bPaginate": false,
 				"aoColumns": [

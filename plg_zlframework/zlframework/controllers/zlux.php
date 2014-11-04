@@ -527,7 +527,7 @@ class ZluxController extends AppController {
 		Returns:
 			JSON object
 	*/
-	public function getFilesManagerData()
+	public function getManagerFilesData()
 	{
 		// init vars
 		$root = trim($this->app->request->get('root', 'string'), '/');

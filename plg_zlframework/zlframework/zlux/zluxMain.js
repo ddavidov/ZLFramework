@@ -121,8 +121,8 @@
 			"js":"plugins/system/zlframework/zlframework/zlux/FieldsManager/plugin.js"
 		},
 		"files":{
-			"css":"plugins/system/zlframework/zlframework/zlux/FilesManager/style.css",
-			"js":"plugins/system/zlframework/zlframework/zlux/FilesManager/plugin.js"
+			"css":"plugins/system/zlframework/zlframework/zlux/ManagerFiles/style.css",
+			"js":"plugins/system/zlframework/zlframework/zlux/ManagerFiles/plugin.js"
 		},
 		"items":{
 			"css":"plugins/system/zlframework/zlframework/zlux/ItemsManager/style.css",
