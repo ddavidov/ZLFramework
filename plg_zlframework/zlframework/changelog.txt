@@ -1,7 +1,16 @@
 Changelog
 ------------
-WIP
+
+3.2.1
+ ^ ZLUX updated to 2.0.2
+ ^ Core improvements
+
+3.2
  # ZLField ItemOrder add_default fix
+ # Fixed Item Model logic issue when cross App filtering
+ # Fixed install issue
+ ^ Removed DataTables asset AMD loading
+ + Added missing translations
 
 3.1.21
  ^ Environment Helper name typo fixed

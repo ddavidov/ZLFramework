@@ -16,35 +16,35 @@
 		<param name="repeatable" type="hidden" />
 
 		<param name="basic" type="zlfield">
-			<setfield id="name" type="text" label="Name" help="Name used in item editor" />
-			<setfield id="description" type="textarea" label="Description" help="DESCRIPTION_TOOLTIP_ITEM_EDITOR" />
+			<setfield id="name" type="text" label="PLG_ZLFRAMEWORK_NAME" help="NAME USED IN ITEM EDITOR" />
+			<setfield id="description" type="textarea" label="PLG_ZLFRAMEWORK_DESCRIPTION" help="DESCRIPTION_TOOLTIP_ITEM_EDITOR" />
 			<loadfield type="access">
-				<access label="Access Level" help="DETAILACCESS" />
+				<access label="ACCESS LEVEL" help="DETAILACCESS" />
 			</loadfield>
-			<setfield id="repeatable" type="radio" default="0" label="Repeatable" help="Set if should be allowed creating multiple instances of the Element" dependents="instancelimit > 1"/>
-			<setfield id="instancelimit" type="text" default="" label="Instance Limit" help="Set how many instances the user can create for this Element. Leave empty for unlimited" />
+			<setfield id="repeatable" type="radio" default="0" label="REPEATABLE" help="PLG_ZLFRAMEWORK_RP_REPETABLE_DESC" dependents="instancelimit > 1"/>
+			<setfield id="instancelimit" type="text" default="" label="PLG_ZLFRAMEWORK_RP_REPEATBLE_LIMIT" help="PLG_ZLFRAMEWORK_RP_REPEATBLE_LIMIT_DESC" />
 		</param>
 	</params>
 	<params group="render">
-		<param name="@info" type="zlinfo" label="Basic" />
+		<param name="@info" type="zlinfo" label="PLG_ZLFRAMEWORK_BASIC" />
 
 		<param name="showlabel" type="hidden" />
 		<param name="altlabel" type="hidden" />
 
-		<param name="basic" type="zlfield" toggle="starthidden" togglelabel="Basic">
-			<setfield id="showlabel" type="radio" label="Show Label" help="Show/Hide element label" default="0" />
-			<setfield id="altlabel" type="text" label="Alternative Label" help="CUSTOM_LABEL" />
+		<param name="basic" type="zlfield" toggle="starthidden" togglelabel="PLG_ZLFRAMEWORK_BASIC">
+			<setfield id="showlabel" type="radio" label="SHOW LABEL" help="SHOW/HIDE ELEMENT LABEL" default="0" />
+			<setfield id="altlabel" type="text" label="ALTERNATIVE LABEL" help="CUSTOM_LABEL" />
 		</param>
 	</params>
 	<params group="submission">
-		<param name="@info" type="zlinfo" label="Basic" />
+		<param name="@info" type="zlinfo" label="PLG_ZLFRAMEWORK_BASIC" />
 
 		<param name="altlabel" type="hidden" />
 		<param name="required" type="hidden" />
 
-		<param name="basic" type="zlfield" toggle="starthidden" togglelabel="Basic">
-			<setfield id="altlabel" type="text" label="Alternative Label" help="CUSTOM_LABEL" />
-			<setfield id="required" type="radio" label="Required" help="Required Field" default="0" />
+		<param name="basic" type="zlfield" toggle="starthidden" togglelabel="PLG_ZLFRAMEWORK_BASIC">
+			<setfield id="altlabel" type="text" label="ALTERNATIVE LABEL" help="CUSTOM_LABEL" />
+			<setfield id="required" type="radio" label="REQUIRED" help="REQUIRED FIELD" default="0" />
 		</param>
 	</params>
 </element>

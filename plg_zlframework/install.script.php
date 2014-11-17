@@ -70,6 +70,12 @@ class plgSystemZlframeworkInstallerScript
 			'plugins/system/zlframework/zlframework/zlux/zluxMain.dev.js'
 		),
 		'folders' => array(
+			'plugins/system/zlframework/zlframework/zlux/DatesManager',
+			'plugins/system/zlframework/zlframework/zlux/DialogManager',
+			'plugins/system/zlframework/zlframework/zlux/FieldsManager',
+			'plugins/system/zlframework/zlframework/zlux/ItemsManager',
+			'plugins/system/zlframework/zlframework/zlux/FilesManager',
+
 			'plugins/system/zlframework/zlframework/assets/libraries/zlparams',
 			'plugins/system/zoo_zlelements/zoo_zlelements/elements_core',
 			'plugins/system/zlframework/zlframework/zlfwhelpers',
@@ -336,6 +342,9 @@ class plgSystemZlframeworkInstallerScript
 	 */
 	protected function checkCompatibility($file)
 	{
+		// load config
+		require_once(JPATH_ADMINISTRATOR.'/components/com_zoo/config.php');
+
 		// set zoo app instance
 		$this->app = App::getInstance('zoo');
 

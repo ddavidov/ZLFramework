@@ -402,10 +402,10 @@ abstract class ElementFilesPro extends ElementRepeatablePro {
 			$root = $this->config->find('files._source_dir', $this->_joomla_file_path);
 
 			// if item is new and the path is using dynamic yet unknown vars, return temporal path
-			$pattern = '/\[zooprimarycat\]|\[zooprimarycatid\]|\[zooitemid\]/';
+			$pattern = '/\[zooprimarycat\]|\[zooprimarycatid\]|\[zooitemid\]|\[zooitemalias\]/';
 			if (!$item->id && preg_match($pattern, $root)) {
 				return 'tmp/zl_' . $this->identifier . '_' . $this->getUniqid();
-			} 
+			}
 
 			// Restricted Joomla! folders
 			$restricted = explode(',', 'administrator,cache,components,includes,language,libraries,logs,media,modules,plugins,templates,xmlrpc');
@@ -663,7 +663,7 @@ abstract class ElementFilesPro extends ElementRepeatablePro {
 				// set the index file in directory
 				$this->app->zoo->putIndexFile($targetDir);
 
-				$files[] = $file;
+				$files[] = $userfile;
 			}
 		}
 	}

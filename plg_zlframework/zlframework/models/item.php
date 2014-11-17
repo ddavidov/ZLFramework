@@ -467,6 +467,8 @@ class ZLModelItem extends ZLModel
 
 		// get the filter query
 		$nestedFilter = $this->getNestedArrayFilter();
+		$i = 0;
+		$nestedFilterQuery = '';
 		foreach ($nestedFilter as $app => &$types) {
 
 			// iterate over types
@@ -504,13 +506,19 @@ class ZLModelItem extends ZLModel
 			// app query
 			$app_query = in_array($app, $this->apps) ? 'a.application_id = ' . (int)$app : '';
 
-			// set the app->type->elements query
+			// get the app->type->elements query
+			$logic = $i == 0 ? '' : 'OR '; // must be AND only of first iterance, then must be OR
 			if ($app_query && $types_query) {
-				$wheres['AND'][] = '(' . $app_query . ' AND (' . $types_query . '))';
+				$nestedFilterQuery .= $logic . '(' . $app_query . ' AND (' . $types_query . '))';
 			} else if ($app_query || $types_query) {
-				$wheres['AND'][] = '(' . $app_query . $types_query . ')';
+				$nestedFilterQuery .= $logic . '(' . $app_query . $types_query . ')';
 			}
+
+			$i++;
 		}
+
+		// add nestedFilterQuery
+		if(!empty($nestedFilterQuery)) $wheres['AND'][] = '(' . $nestedFilterQuery . ')';
 
 		// At the end, merge ORs
 		if( count( $wheres['OR'] ) ) {
@@ -539,8 +547,8 @@ class ZLModelItem extends ZLModel
 		$value      = $element->get('value');
 		$logic      = strtoupper($element->get('logic', 'AND'));
 		$mode       = $element->get('mode', 'AND');
-		$from       = $element->get('from', false);
-		$to         = $element->get('to', false);
+		$from       = $element->get('from', null);
+		$to         = $element->get('to', null);
 		$convert    = $element->get('convert', 'DECIMAL');
 		$type       = $element->get('type', false);
 

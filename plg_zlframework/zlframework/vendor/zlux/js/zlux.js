@@ -14,7 +14,7 @@
         return ZX;
     }
 
-    ZX.version = '2.0.1';
+    ZX.version = '2.0.2';
 
 
     /** URI **/
@@ -22,6 +22,7 @@
     ZX.url.urls = {
         ajax: '',
         root: '',
+        root_path: '',
         zlux: ''
     };
     /**
@@ -40,9 +41,23 @@
     ZX.url.get = function (url, params) {
         url = url.split(':');
         params = params === undefined ? {} : params;
+        var result;
 
-        return ZX.url.clean(url.length === 2 ? ZX.url._get(url[0]) + '/' + url[1] : url[0]) +
-            ($.isEmptyObject(params) ? '' : '&' + $.param(params));
+        if(url.length === 2 && url[1] !== '') {
+
+            var root_path = ZX.url.urls.root_path.replace(/^\//, '');
+
+            result = ZX.url._get(url[0]) + '/' + url[1]
+
+            // make sure the joomla root path is not present
+            .replace(new RegExp('^'+root_path, 'g'), '')
+            .replace(new RegExp('^\/'+root_path, 'g'), '');
+
+        } else {
+            result = ZX.url._get(url[0]) + ($.isEmptyObject(params) ? '' : '&' + $.param(params));
+        }
+
+        return ZX.url.clean(result);
     };
     ZX.url._get = function (url) {
         return ZX.url.urls[url] !== undefined ? ZX.url.urls[url] : url;
@@ -60,8 +75,8 @@
         // replace \ with /
         .replace(/\\/g, '/')
 
-        // replace // with /
-        .replace(/\/\//g, '/')
+        // replace double or more slashes
+        .replace(/\/\/+/g, '/')
 
         // remove undefined
         .replace(/undefined/g, '')
