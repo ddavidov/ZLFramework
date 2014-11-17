@@ -109,24 +109,24 @@
 	// store known assets for fast loading
 	zlux.assets.known = {
 		"dates":{
-			"css":"plugins/system/zlframework/zlframework/zlux/datesmanager/style.css",
-			"js":"plugins/system/zlframework/zlframework/zlux/datesmanager/plugin.js"
+			"css":"plugins/system/zlframework/zlframework/zlux/managerdates/style.css",
+			"js":"plugins/system/zlframework/zlframework/zlux/managerdates/plugin.js"
 		},
 		"dialog":{
-			"css":"plugins/system/zlframework/zlframework/zlux/dialogmanager/style.css",
-			"js":"plugins/system/zlframework/zlframework/zlux/dialogmanager/plugin.js"
+			"css":"plugins/system/zlframework/zlframework/zlux/managerdialog/style.css",
+			"js":"plugins/system/zlframework/zlframework/zlux/managerdialog/plugin.js"
 		},
 		"fields":{
-			"css":"plugins/system/zlframework/zlframework/zlux/fieldsmanager/style.css",
-			"js":"plugins/system/zlframework/zlframework/zlux/fieldsmanager/plugin.js"
+			"css":"plugins/system/zlframework/zlframework/zlux/managerfields/style.css",
+			"js":"plugins/system/zlframework/zlframework/zlux/managerfields/plugin.js"
 		},
 		"files":{
 			"css":"plugins/system/zlframework/zlframework/zlux/managerfiles/style.css",
 			"js":"plugins/system/zlframework/zlframework/zlux/managerfiles/plugin.js"
 		},
 		"items":{
-			"css":"plugins/system/zlframework/zlframework/zlux/itemsmanager/style.css",
-			"js":"plugins/system/zlframework/zlframework/zlux/itemsmanager/plugin.js"
+			"css":"plugins/system/zlframework/zlframework/zlux/manageritems/style.css",
+			"js":"plugins/system/zlframework/zlframework/zlux/manageritems/plugin.js"
 		}
 	};
 
