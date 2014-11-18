@@ -22,7 +22,9 @@ class zlfwHelperCheck extends AppHelper {
 	public function addMsg($message_text, $namespace = 'error'){
 
 		if(array_key_exists($namespace, self::$stack)){
-			self::$stack[$namespace][] = JText::_($message_text);
+			if(!in_array($message_text, self::$stack[$namespace])){
+				self::$stack[$namespace][] = JText::_($message_text);
+			}
 		}else{
 			self::$stack[$namespace] = array(JText::_($message_text));
 		}
@@ -86,7 +88,12 @@ class zlfwHelperCheck extends AppHelper {
 	 */
 	public function checkWrappers(){
 
-		$success = (bool)ini_get('allow_url_fopen');
+		// If we are not allowed to use ini_get, we assume that URL fopen is disabled
+		if (!function_exists('ini_get')) {
+			$success = false;
+		} else {
+			$success = (bool)ini_get('allow_url_fopen');
+		}
 
 		if(!$success){
 			$this->addMsg('PLG_ZLFRAMEWORK_REMORE_FILE_READ_DISABLED');
