@@ -4,7 +4,7 @@
  * Class zlfwHelperCheck
  * Diagnistic helper for checking required system settings or server settings
  */
-class zlfwHelperCheck extends AppHelper {
+class zlHelperCheck extends AppHelper {
 
 	/**
 	 * @var Messages stack
