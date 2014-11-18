@@ -9,7 +9,7 @@ class zlfwHelperCheck extends AppHelper {
 	/**
 	 * @var Messages stack
 	 */
-	protected static $stack;
+	protected static $stack = array();
 
 	/**
 	 * Add message to stack
@@ -87,6 +87,10 @@ class zlfwHelperCheck extends AppHelper {
 	public function checkWrappers(){
 
 		$success = (bool)ini_get('allow_url_fopen');
+
+		if(!$success){
+			$this->addMsg('PLG_ZLFRAMEWORK_REMORE_FILE_READ_DISABLED');
+		}
 
 		return $success;
 	}
