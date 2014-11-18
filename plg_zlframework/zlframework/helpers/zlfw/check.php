@@ -55,7 +55,7 @@ class zlfwHelperCheck extends AppHelper {
 	}
 
 	/**
-	 * Check curl options
+	 * Check curl config
 	 *
 	 * @return  bool
 	 */
@@ -75,6 +75,18 @@ class zlfwHelperCheck extends AppHelper {
 				$this->addMsg('PLG_ZLFRAMEWORK_CURL_SSL_NOT_SUPPORTED', 'warning');
 			}
 		}
+
+		return $success;
+	}
+
+	/**
+	 * Check fopen and permissions
+	 *
+	 * @return  bool
+	 */
+	public function checkWrappers(){
+
+		$success = (bool)ini_get('allow_url_fopen');
 
 		return $success;
 	}
