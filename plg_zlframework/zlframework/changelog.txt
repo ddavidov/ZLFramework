@@ -1,6 +1,12 @@
 Changelog
 ------------
 
+3.2.2
+ ^ ZLUX folder names changed to avoid conflicts with some servers
+ # Fix query for range filter
+ # FilesPro: fix root directory for new Items
+ + ZL Check Helper
+
 3.2.1
  ^ ZLUX updated to 2.0.2
  ^ Core improvements
