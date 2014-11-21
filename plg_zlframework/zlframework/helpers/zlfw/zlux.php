@@ -46,7 +46,7 @@ class zlfwHelperZlux extends AppHelper {
 		// load zlux class
 		$name = strtolower($name);
 		$class = 'zlux'.ucfirst($name);
-		$this->app->loader->register($class, 'zlfw:zlux/'.ucfirst($name).'Manager/class.php');
+		$this->app->loader->register($class, 'zlfw:zlux/manager'.strtolower($name).'/class.php');
 		
 		// add class, if not exists
 		if (!isset($this->_classes[$name])) {
