@@ -1634,7 +1634,7 @@
 			// if S3 storage
 			if($this.options.storage === 's3') {
 				$.extend(params, {
-					url: 'http://' + $this.options.storage_params.bucket + '.s3.amazonaws.com',
+					url: '//' + $this.options.storage_params.bucket + '.s3.amazonaws.com',
 					multipart: true,
 					multipart_params: {
 						'key': '${filename}', // use filename as a key
