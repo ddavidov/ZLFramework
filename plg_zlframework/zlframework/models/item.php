@@ -913,7 +913,7 @@ class ZLModelItem extends ZLModel
 		if (!isset($result[1])) {
 			$result[0] = ZOO_TABLE_SEARCH." AS s ON a.id = s.item_id AND s.element_id IN ('".implode("', '", $order)."')";
 			if ($alphanumeric) {
-				$result[1] = $reversed == 'ASC' ? "ISNULL(s.value), s.value+0<>0 DESC, s.value+0, s.value" : "s.value+0<>0, s.value+0 DESC, s.value DESC";
+				$result[1] = $reversed == 'ASC' ? "ISNULL(s.value), s.value+0<>0 DESC, s.value+0, s.value" : "ISNULL(s.value), s.value+0<>0, s.value+0 DESC, s.value DESC";
 			} else {
 				$result[1] = $reversed == 'ASC' ? "s.value" : "s.value DESC";
 			}
