@@ -1,6 +1,10 @@
 Changelog
 ------------
 
+3.2.3
+ # Fix directory register after the folder renaming
+ # Https compatibility for S3 upload through ZLUX
+
 3.2.2
  ^ ZLUX folder names changed to avoid conflicts with some servers
  # Fix query for range filter
