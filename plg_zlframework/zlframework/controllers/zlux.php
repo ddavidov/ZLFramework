@@ -312,6 +312,8 @@ class ZluxController extends AppController {
 		$g_tags		= explode(',', $this->app->request->get('filter_tags', 'string', ''));
 		$sEcho	 	= $this->app->request->get('sEcho', 'string', '');
 
+		$hideUnpublished = $this->app->request->get('hide_unpublished', 'string', '');
+
 		/* Array of database columns which should be read and sent back to DataTables. Use a space where
 		   you want to insert a non-database field (for example a counter or static image) */
 		$aColumns = array('_itemname', 'application', 'type', 'access', 'author', 'id');
@@ -416,6 +418,11 @@ class ZluxController extends AppController {
 			if (isset($s_authors) && !empty($s_authors)) {
 				$model->created_by(array('value' => implode(',', $s_authors)));
 			}
+		}
+
+		// publish state
+		if ($hideUnpublished) {
+			$model->state(1);
 		}
 
 		// ordering

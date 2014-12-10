@@ -69,7 +69,8 @@
 						types = $this.filter.types ? $this.filter.types : $this.options.types,
 						cats = $this.filter.cats ? $this.filter.cats : $this.options.categories,
 						tags = $this.filter.tags ? $this.filter.tags : $this.options.tags,
-						authors = $this.filter.authors ? $this.filter.authors : $this.options.authors;
+						authors = $this.filter.authors ? $this.filter.authors : $this.options.authors,
+						hide_unpublished = $this.options.hide_unpublished;
 
 					// push the preset filter values
 					aoData.push({ "name": "apps", "value": $this.options.apps });
@@ -83,6 +84,7 @@
 					aoData.push({ "name": "filter_types", "value": types });
 					aoData.push({ "name": "filter_cats", "value": cats });
 					aoData.push({ "name": "filter_tags", "value": tags });
+					aoData.push({ "name": "hide_unpublished", "value": hide_unpublished });
 				},
 				"oLanguage": {
 					"sEmptyTable": $this._('IM_NO_ITEMS_FOUND'),
