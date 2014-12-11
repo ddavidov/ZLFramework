@@ -21,12 +21,14 @@ class zlHelperCheck extends AppHelper {
 	 */
 	public function addMsg($message_text, $namespace = 'error'){
 
+		$key = md5($message_text);
+
 		if(array_key_exists($namespace, self::$stack)){
-			if(!in_array($message_text, self::$stack[$namespace])){
-				self::$stack[$namespace][] = JText::_($message_text);
+			if(!array_key_exists($key, self::$stack[$namespace])){
+				self::$stack[$namespace][$key] = JText::_($message_text);
 			}
 		}else{
-			self::$stack[$namespace] = array(JText::_($message_text));
+			self::$stack[$namespace] = array($key => JText::_($message_text));
 		}
 	}
 
