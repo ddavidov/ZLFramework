@@ -39,7 +39,7 @@ class zlHelperCheck extends AppHelper {
 	 *
 	 * @return  array
 	 */
-	public function getMsg($namespace = NULL){
+	public function getMsg($namespace = NULL, $keepindex = false){
 		$buffer = array();
 
 		if(!empty($namespace)){
@@ -48,9 +48,13 @@ class zlHelperCheck extends AppHelper {
 			}
 		}else{
 			if(!empty(self::$stack)){
-				// Mix and return messages from all namespaces:
-				foreach(self::$stack as $group => $messages){
-					$buffer = array_merge($buffer, $messages);
+				if(!$keepindex){
+					// Mix and return messages from all namespaces:
+					foreach(self::$stack as $group => $messages){
+						$buffer = array_merge($buffer, $messages);
+					}
+				}else{
+					$buffer = self::$stack;
 				}
 			}
 		}
