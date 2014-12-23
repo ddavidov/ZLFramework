@@ -661,7 +661,10 @@ abstract class ElementFilesPro extends ElementRepeatablePro {
 				}
 
 				// set the index file in directory
-				$this->app->zoo->putIndexFile($targetDir);
+				if(method_exists($this->app->zoo, 'putIndexFile'))
+				{
+					$this->app->zoo->putIndexFile($targetDir);
+				}
 
 				$files[] = $userfile;
 			}

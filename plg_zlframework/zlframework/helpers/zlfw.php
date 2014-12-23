@@ -610,7 +610,11 @@ class zlfwHelper extends AppHelper {
 						JFile::copy($file, $thumbfile);
 					}
 				}
-				$this->app->zoo->putIndexFile(dirname($thumbfile));
+
+				if(method_exists($this->app->zoo, 'putIndexFile'))
+				{
+					$this->app->zoo->putIndexFile(dirname($thumbfile));
+				}
 			}
 
 			if (is_file($thumbfile))
