@@ -660,12 +660,6 @@ abstract class ElementFilesPro extends ElementRepeatablePro {
 					throw new AppException('Unable to upload file.');
 				}
 
-				// set the index file in directory
-				if(method_exists($this->app->zoo, 'putIndexFile'))
-				{
-					$this->app->zoo->putIndexFile($targetDir);
-				}
-
 				$files[] = $userfile;
 			}
 		}
