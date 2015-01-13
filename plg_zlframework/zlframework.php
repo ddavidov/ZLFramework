@@ -15,7 +15,6 @@ jimport('joomla.filesystem.file');
 
 class plgSystemZlframework extends JPlugin {
 	
-	public $joomla;
 	public $app;
 
 	/**
@@ -42,8 +41,7 @@ class plgSystemZlframework extends JPlugin {
 			return;
 		}
 		
-		// Get the Joomla and ZOO App instance
-		$this->joomla = JFactory::getApplication();
+		// Get ZOO App instance
 		$this->app = App::getInstance('zoo');
 		
 		// load default and current language
@@ -117,7 +115,7 @@ class plgSystemZlframework extends JPlugin {
 		$this->app->event->dispatcher->connect('type:beforesave', array($this, 'typeBeforeSave'));
 		
 		// perform admin tasks
-		if ($this->joomla->isAdmin()) {
+		if ($this->app->system->application->isAdmin()) {
 			$this->app->document->addStylesheet('zlfw:assets/css/zl_ui.css');
 		}
 
@@ -171,7 +169,7 @@ class plgSystemZlframework extends JPlugin {
 	public function checkInstallation()
 	{
 		// if in admin views
-		if ($this->app->zlfw->environment->is('admin.com_zoo admin.com_installer admin.com_plugins'))
+		if ($this->app->system->application->isAdmin() && $this->app->zlfw->environment->is('admin.com_zoo admin.com_installer admin.com_plugins'))
 		{
 			return $this->_checkDependencies();
 		}
