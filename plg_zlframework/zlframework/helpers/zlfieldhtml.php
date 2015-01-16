@@ -780,10 +780,9 @@ class ZLFieldHTMLHelper extends AppHelper {
         $app->trigger('init.admin', array($app));
 
         $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-        $widgets = json_encode(explode(',', str_replace(' ', '', $spec->get('widgets'))));
 
         return <<<EOT
-	    <a class="wk2-zl-selector" data-zl-widgets=$widgets>Select Widget</a>
+	    <a class="wk2-zl-selector">Select Widget</a>
 	    <span class="wk2-zl-selected"></span>
 	    <input type="hidden" name="$name" value="$value">
 EOT;
