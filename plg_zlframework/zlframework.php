@@ -129,6 +129,20 @@ class plgSystemZlframework extends JPlugin {
 
 		// load ZL Fields, workaround for first time using ZL elements
 		if ($this->app->zlfw->isTheEnviroment('zoo-type-edit')) $this->app->zlfield->loadAssets();
+
+		// extend the Widgetkit2 ZOO mapping element list
+		if ($wk = @include JPATH_ADMINISTRATOR.'/components/com_widgetkit/widgetkit-app.php') {
+			$wk->on('init', function ($event, $app) { 
+
+				$mapping = array_merge_recursive($app['joomla.zoo']->getMapping(), array(
+			        'location' => array('googlemapspro'),
+			        'image'    => array('imagepro'),
+			        'media'    => array('mediapro')
+			    ));
+
+				$app['joomla.zoo']->setMapping($mapping);
+			});
+		}
 	}
 
 	/**
