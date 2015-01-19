@@ -775,10 +775,6 @@ class ZLFieldHTMLHelper extends AppHelper {
             return;
         }
 
-        $app['scripts']->add('widgetkit-zlfw', JPATH_ROOT.'/plugins/system/zlframework/zlframework/zlfield/assets/wk2Field.js', array('widgetkit-application'));
-        
-        $app->trigger('init.admin', array($app));
-
         $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 
         return <<<EOT

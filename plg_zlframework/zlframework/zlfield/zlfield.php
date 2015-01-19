@@ -804,6 +804,11 @@ class ZlfieldHelper extends AppHelper {
 			$this->app->zlfw->loadLibrary('qtip');
 			$this->app->document->addStylesheet('zlfw:assets/libraries/zlux/zlux.css');
 
+			// load wk2 assets
+			if ($app = @include(JPATH_ADMINISTRATOR . '/components/com_widgetkit/widgetkit-app.php')) {
+	            $app->trigger('init.admin', array($app));
+	        }
+
 			// init scripts
 			$javascript = "jQuery(function($){ $('body').ZLfield({ url: '{$url}', type: '{$this->type}', enviroment: '{$this->enviroment}', enviroment_args: '{$enviroment_args}' }); });";
 			$this->app->document->addScriptDeclaration($javascript);
