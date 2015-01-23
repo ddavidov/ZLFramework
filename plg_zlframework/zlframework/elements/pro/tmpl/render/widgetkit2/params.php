@@ -14,7 +14,8 @@ return
 
 	"_widget":{
 		"type": "wk2",
-		"label": "Widget"
+		"label": "Widget",
+		"help": "PLG_ZLFRAMEWORK_WK2_SELECT_WIDGET_DESC"
 	}
 
 }}';
