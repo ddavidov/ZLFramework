@@ -788,7 +788,7 @@ class ZLModelItem extends ZLModel
 				if($datetime)
 				$el_where = "( ($sql_value LIKE '%$date%') OR (('$date' BETWEEN $sql_value AND $sql_value) AND $sql_value NOT REGEXP '[[.LF.]]') )";
 				else
-				$el_where = "( ($sql_value LIKE '%$date%') OR (('$date' BETWEEN SUBSTR($sql_value, 1, 10) AND SUBSTR($sql_value, -19, 10)) AND $sql_value NOT REGEXP '[[.LF.]]') )";
+				$el_where = "( ($sql_value LIKE '%$date%') OR (SUBSTR($sql_value, 1, 19) BETWEEN $from AND $to) OR (SUBSTR($sql_value, 21, 19) BETWEEN $from AND $to) OR (SUBSTR($sql_value, 41, 19) BETWEEN $from AND $to) OR (SUBSTR($sql_value, 61, 19) BETWEEN $from AND $to) OR (SUBSTR($sql_value, 81, 19) BETWEEN $from AND $to))";
 		}
 
 		// wrapper the query if necesary
