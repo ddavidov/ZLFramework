@@ -541,7 +541,12 @@ abstract class ElementFilesPro extends ElementRepeatablePro {
 			Array - cleaned value
 	*/
 	public function validateSubmission($value, $params)
-	{	
+	{
+		// add parameter uniqid for default layout
+		if (empty($value[0]['uniqid'])) {
+			$value[0]['uniqid'] = $this->getUniqid();
+		}
+
 		// get old file values, the allready stored ones
 		$old_files = array();
 		foreach($this as $self) {
