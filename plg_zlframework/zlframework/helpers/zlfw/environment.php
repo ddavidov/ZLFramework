@@ -15,7 +15,6 @@ defined('_JEXEC') or die('Restricted access');
 */
 class zlfwHelperEnvironment extends AppHelper {
 
-	public $joomla;
 	public $params;
 
 	/*
@@ -25,9 +24,6 @@ class zlfwHelperEnvironment extends AppHelper {
 
 		// call parent constructor
 		parent::__construct($app);
-
-		// set Joomla instance
-		$this->joomla = JFactory::getApplication();
 
 		// set params as DATA class
 		$this->params = $this->app->data->create(array());
@@ -55,7 +51,7 @@ class zlfwHelperEnvironment extends AppHelper {
 		$view = $this->app->request->getCmd('view', null);
 
 		// set back or frontend
-		$environment[] = $this->joomla->isAdmin() ? 'admin' : 'site';
+		$environment[] = $this->app->system->application->isAdmin() ? 'admin' : 'site';
 
 		// set component
 		$environment[] = $component;

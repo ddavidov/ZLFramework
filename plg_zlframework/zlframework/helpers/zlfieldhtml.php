@@ -764,6 +764,26 @@ class ZLFieldHTMLHelper extends AppHelper {
 		return implode('', $html);
 	}
 
+	/*
+		Function: wk2 - Returns Widgetkit2 field html string
+	*/
+
+	public function wk2Field($id, $name, $value, $spec, $attrs, $returnRawValue)
+	{
+		$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+		if (!@include(JPATH_ADMINISTRATOR . '/components/com_widgetkit/widgetkit-app.php')) {
+            return
+            '<input type="hidden" name="'.$name.'" value="'.$value.'">' .
+            JText::_('PLG_ZLFRAMEWORK_WK2_NOT_PRESENT');
+        }
+
+        return <<<EOT
+	    <a class="wk2-zl-selector">Select Widget</a>
+	    <span class="wk2-zl-selected"></span>
+	    <input type="hidden" name="$name" value="$value">
+EOT;
+	}
 
 	/* HTML Fields Helpers
 	--------------------------------------------------------------------------------------------------------------------------------------------*/

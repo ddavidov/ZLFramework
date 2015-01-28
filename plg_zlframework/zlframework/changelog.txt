@@ -1,6 +1,10 @@
 Changelog
 ------------
 
+3.3.0
+ # Widgetkit 2 integration
+ # Minor issues fixed
+
 3.2.3
  # Fix directory register after the folder renaming
  # Https compatibility for S3 upload through ZLUX
