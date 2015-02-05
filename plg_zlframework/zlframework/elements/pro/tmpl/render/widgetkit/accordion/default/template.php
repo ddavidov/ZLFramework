@@ -25,6 +25,7 @@ defined('_JEXEC') or die('Restricted access');
 			$item['content'] = $this->app->zlfw->applySeparators($separated_by[0], $item['content'], $params->find('separator._class'), $params->find('separator._fixhtml'));
 		}
 	}
+	unset($item);
 ?>
 
 <div id="accordion-<?php echo $widget_id;?>" class="yoo-wk wk-accordion wk-accordion-default clearfix" <?php if (is_numeric($settings['width'])) echo 'style="width: '.$settings['width'].'px;"'; ?> data-widgetkit="accordion" data-options='<?php echo json_encode($settings); ?>'>
