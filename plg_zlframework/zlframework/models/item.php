@@ -439,7 +439,7 @@ class ZLModelItem extends ZLModel
 					foreach ($values as &$val) {
 						$val = $this->_db->Quote( $val );
 					}
-
+					unset($val);
 					// build the where for ORs
 					if ( strtoupper($tags->get('mode', 'OR')) == 'OR' ){
 						$wheres[$logic][] = "t.name IN (".implode(',', $values ).")";
