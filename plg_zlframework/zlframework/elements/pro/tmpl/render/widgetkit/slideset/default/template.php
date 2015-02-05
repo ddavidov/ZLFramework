@@ -29,6 +29,7 @@ defined('_JEXEC') or die('Restricted access');
 		}
 	}
 
+	unset($item);
 	if (is_numeric($settings['items_per_set'])) {
 		
 		$sets = array_chunk($items, $settings['items_per_set']);
