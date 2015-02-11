@@ -1,5 +1,7 @@
 Changelog
 ------------
+#WIP
+ # Fix reverse option for ordering by priority
 
 3.3.0
  # Widgetkit 2 integration

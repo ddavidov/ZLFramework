@@ -920,7 +920,7 @@ class ZLModelItem extends ZLModel
 		}
 
 		// set priority at the end
-		if ($priority) $result[1] = "a.priority DESC, " . $result[1];
+		if ($priority) $result[1] = "a.priority $reversed, " . $result[1];
 
 		return $result;
 	}
