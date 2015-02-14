@@ -1,8 +1,11 @@
 Changelog
 ------------
 
+WIP
+ ^ WK 2.0.8 compatibility
+
 3.3.0
- # Widgetkit 2 integration
+ + Widgetkit 2 integration
  # Minor issues fixed
 
 3.2.3

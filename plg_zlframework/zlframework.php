@@ -132,15 +132,13 @@ class plgSystemZlframework extends JPlugin {
 
 		// extend the Widgetkit2 ZOO mapping element list
 		if ($wk = @include JPATH_ADMINISTRATOR.'/components/com_widgetkit/widgetkit-app.php') {
-			$wk->on('joomla.zoo.items', function ($event, $app) { 
+			$wk->on('joomla.zoo.items', function ($event) { 
 
-				$mapping = array_merge_recursive($app['joomla.zoo']->getMapping(), array(
+				$event['renderer']->setMapping(array_merge_recursive($event['renderer']->getMapping(), array(
 					'location' => array('googlemapspro'),
 					'image'    => array('imagepro'),
 					'media'    => array('mediapro')
-				));
-
-				$app['joomla.zoo']->setMapping($mapping);
+				)));
 			});
 		}
 	}
