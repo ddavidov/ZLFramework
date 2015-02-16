@@ -1,5 +1,7 @@
 Changelog
 ------------
+#WIP
+ # Fix reverse option for ordering by priority
 
 WIP
  ^ WK 2.0.8 compatibility
