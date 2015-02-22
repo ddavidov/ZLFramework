@@ -185,6 +185,7 @@ defined('_JEXEC') or die('Restricted access');
 			"type":"apps",
 			"specific": {
 				'./* it inherits all specific options from select */'
+				"group":"groupname"
 			}
 		},
 
@@ -195,7 +196,9 @@ defined('_JEXEC') or die('Restricted access');
 				'./* it inherits all specific options from select plus */'
 				"submissions":{
 					"submission_id":"id" './* Filter Types based if they are part of provided submissions */'
-				}
+				},
+				"appgroup":"groupname",
+				"types":"typenames"
 			}
 		},
 
