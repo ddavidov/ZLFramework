@@ -1,11 +1,11 @@
-/* ===================================================
- * zlux
- * https://zoolanders.com
- * ===================================================
- * Copyright (C) JOOlanders SL
- * http://www.gnu.org/licenses/gpl-2.0.html
- * ========================================================== */
-;(function ($, window, document, undefined) {
+/**
+ * @package     zlux
+ * @version     2.0.2
+ * @author      ZOOlanders - http://zoolanders.com
+ * @license     GNU General Public License v2 or later
+ */
+
+(function ($, UI) {
     "use strict";
 
     var ZX = $.zx || {};
@@ -151,7 +151,7 @@
     */
     String.prototype.hashCode = function(){
        if (Array.prototype.reduce){
-           return this.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+           return this.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0);              
        } 
        var hash = 0;
        if (this.length === 0) return hash;
@@ -164,106 +164,22 @@
     };
 
 
-    /** ASSETS **/
-    ZX.assets = {};
-    ZX.assets._ress = {}; // requested assets
-    /**
-     * Load requested assets and execute callback
-     * @ress String or Array
-     */
-    ZX.assets.load = function(ress, callback, failcallback) {
-        var req  = [];
-        
-        // clean vars
-        ress = $.isArray(ress) ? ress:[ress];
+    window.zlux  = ZX;
+    $.zx         = ZX;
 
-        // load assets
-        for (var i=0, len=ress.length; i<len; i++) {
 
-            if(!ress[i]) continue;
+    UI.ready(function() {
 
-            if (!ZX.assets._ress[ress[i]]) {
-                if (ress[i].match(/\.js$/)) {
-                    ZX.assets._ress[ress[i]] = ZX.assets.getScript(ZX.url.get('root:'+ress[i]));
-                } else {
-                    ZX.assets._ress[ress[i]] = ZX.assets.getCss(ZX.url.get('root:'+ress[i]));
-                }
-            }
-            req.push(ZX.assets._ress[ress[i]]);
-        }
-
-        return $.when.apply($, req).done(callback).fail(function(){
-            if (failcallback) {
-                failcallback();
-            } else {
-                $.error("Require failed: \n" + ress.join(",\n"));
-            }
+        // style workaround wrapping root elements with zlux    
+        $('[data-uk-nestable]').on('nestable-start', function() {
+            $('.uk-nestable-list-dragged').wrap('<div class="zx" />');
         });
-    };
-    ZX.assets.getScript = function(url, callback) {
-        var d = $.Deferred(), script = document.createElement('script');
 
-        script.async = true;
+        ZX.component.bootComponents();
+    });
 
-        script.onload = function() {
-            d.resolve();
-            if(callback) { callback(script); }
-        };
-
-        script.onerror = function() {
-            d.reject(url);
-        };
-
-        // IE 8 fix
-        script.onreadystatechange = function() {
-            if (this.readyState == 'loaded' || this.readyState == 'complete') {
-                d.resolve();
-                if(callback) { callback(script); }
-            }
-        };
-
-        script.src = url;
-
-        document.getElementsByTagName('head')[0].appendChild(script);
-
-        return d.promise();
-    };
-    ZX.assets.getCss = function(url, callback){
-        var d         = $.Deferred(),
-            link      = document.createElement('link');
-            link.type = 'text/css';
-            link.rel  = 'stylesheet';
-            link.href = url;
-
-        document.getElementsByTagName('head')[0].appendChild(link);
-
-        var img = document.createElement('img');
-            img.onerror = function(){
-                d.resolve();
-                if(callback) callback(link);
-            };
-            img.src = url;
-
-        return d.promise();
-    };
-
-
-    // ZX init functions
-    var _ready = $.Deferred();
-    ZX.ready = function() {
-        return _ready.promise();
-    };
-    ZX.init = function() {
-        _ready.resolve();
-    };
-
-
-    // declare zlux
-    $.zx = ZX;
-
-})(jQuery, window, document);
-
-;(function ($, ZX, window, document, undefined) {
+})(jQuery, UIkit);
+;(function ($, ZX, UI) {
     "use strict";
 
     ZX.extensions = {};
@@ -306,6 +222,7 @@
 
             defaults: {plugins: []},
 
+            boot: function(){},
             init: function(){},
 
             on: function(){
@@ -385,7 +302,26 @@
             ZX.extensions[name].plugins[plugin] = def;
         };
 
+        if (UI.domready) {
+            UI.component.boot(name);
+        }
+
         return fn;
+    };
+
+    ZX.component.boot = function(name) {
+
+        if (ZX.extensions[name].prototype && ZX.extensions[name].prototype.boot && !ZX.extensions[name].booted) {
+            ZX.extensions[name].prototype.boot.apply(ZX, []);
+            ZX.extensions[name].booted = true;
+        }
+    };
+
+    ZX.component.bootComponents = function() {
+
+        for (var component in ZX.extensions) {
+            ZX.component.boot(component);
+        }
     };
 
 
@@ -485,53 +421,7 @@
 
     $.fn.zx = ZX.fn;
 
-})(jQuery, jQuery.zx, window, document);
-
-;(function ($, ZX, window, document, undefined) {
-    "use strict";
-
-    ZX.plugin('animate', {
-
-        init: function(options) {
-            var $this = this,
-
-            // set animation class
-            animation = 'zx-animate-' + $.trim(options[0]),
-
-            // set callback
-            callback = options[1] ? options[1] : null;
-                
-            // animate
-            $this.animate(animation).done(function(){
-
-                // execute any callback passing the element as scope
-                if (callback) callback.apply($this.element);
-            });
-        },
-
-        animate: function(animation) {
-            var $this = this;
-
-            return $.Deferred(function(defer) {
-
-                // animate the element with CSS3
-                $this.element.addClass(animation)
-
-                // when done
-                .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
-
-                    // remove the class to allow further animation
-                    $this.element.removeClass(animation);
-
-                    defer.resolve();
-                });
-
-            }).promise();
-        }
-    });
-
-})(jQuery, jQuery.zx, window, document);
-
+})(jQuery, zlux, UIkit);
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
 
@@ -803,7 +693,50 @@
     };
 
 })(jQuery, jQuery.zx, window, document);
+;(function ($, ZX, window, document, undefined) {
+    "use strict";
 
+    ZX.plugin('animate', {
+
+        init: function(options) {
+            var $this = this,
+
+            // set animation class
+            animation = 'zx-animate-' + $.trim(options[0]),
+
+            // set callback
+            callback = options[1] ? options[1] : null;
+                
+            // animate
+            $this.animate(animation).done(function(){
+
+                // execute any callback passing the element as scope
+                if (callback) callback.apply($this.element);
+            });
+        },
+
+        animate: function(animation) {
+            var $this = this;
+
+            return $.Deferred(function(defer) {
+
+                // animate the element with CSS3
+                $this.element.addClass(animation)
+
+                // when done
+                .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(e) {
+
+                    // remove the class to allow further animation
+                    $this.element.removeClass(animation);
+
+                    defer.resolve();
+                });
+
+            }).promise();
+        }
+    });
+
+})(jQuery, jQuery.zx, window, document);
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
 
@@ -874,7 +807,6 @@
     ZX.modal.confirm  = confirm;
 
 })(jQuery, jQuery.zx, window, document);
-
 ;(function ($, ZX, window, document, undefined) {
     "use strict";
     
@@ -938,6 +870,44 @@
             // remove spin instance from element
             $this.element.removeData('spin');
         }
+    });
+
+})(jQuery, jQuery.zx, window, document);
+;(function ($, ZX, window, document, undefined) {
+    "use strict";
+
+    var instance_id = 0,
+        cache = {};
+    
+    ZX.component('upload', {
+
+        defaults: {
+            root: '', // relative path to the root folder
+            extensions: '', // array or comma separated values of allowed extensions
+            storage: 'local',
+            storage_params: {},
+            max_file_size: '',
+            resize: {}
+        },
+
+        init: function() {
+            var $this = this;
+
+            // set the resources list
+
+        }
+
+    });
+
+    // init code
+    $.UIkit.ready(function(context) {
+        $('.zx-manager [data-zx-manager-upload]', context).each(function() {
+            var manager = $(this);
+
+            if (!manager.data('uploadManager')) {
+                var obj = ZX.uploadManager(manager, $.UIkit.Utils.options(manager.attr('data-zx-manager-upload')));
+            }
+        });
     });
 
 })(jQuery, jQuery.zx, window, document);

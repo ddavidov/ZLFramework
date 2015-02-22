@@ -226,7 +226,6 @@ class zlfwHelperZlux extends AppHelper {
 		// add to script
 		if ($zlux2) {
 			$javascript .= "jQuery.zx.lang.push(" . json_encode($translations) . ");";
-			$javascript .= "jQuery.zx.init();";
 		} else {
 			$javascript .= "jQuery.zlux.lang.set(" . json_encode($translations) . ");";
 		}
