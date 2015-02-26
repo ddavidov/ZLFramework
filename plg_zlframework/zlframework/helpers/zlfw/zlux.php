@@ -81,8 +81,8 @@ class zlfwHelperZlux extends AppHelper {
 
 			// if no file found it's not warp 7, load zlux uikit css and js
 			if (!$this->app->path->path($path)) {
-				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux.uikit.min.css');
-				$this->app->document->addScript('zlfw:vendor/zlux/js/uikit/uikit.min.js');
+				$this->app->document->addStylesheet('zlfw:vendor/zlux/css/zlux-uikit.min.css');
+				$this->app->document->addScript('zlfw:vendor/zlux/vendor/uikit/js/uikit.min.js');
 			} else {
 				// load warp uikit js
 				$this->app->document->addScript('root:templates/'.$template.'/warp/vendor/uikit/js/uikit.js');
@@ -151,7 +151,7 @@ class zlfwHelperZlux extends AppHelper {
 				'root_path' => JURI::root(true)
 			);
 
-			$javascript .= "jQuery.zx.url.push(" . json_encode($urls) . ");";
+			$javascript .= "zlux.url.push(" . json_encode($urls) . ");";
 
 		} else {
 			$app_id = $this->app->zoo->getApplication() ? $this->app->zoo->getApplication()->id : '';
@@ -225,7 +225,7 @@ class zlfwHelperZlux extends AppHelper {
 
 		// add to script
 		if ($zlux2) {
-			$javascript .= "jQuery.zx.lang.push(" . json_encode($translations) . ");";
+			$javascript .= "zlux.lang.push(" . json_encode($translations) . ");";
 		} else {
 			$javascript .= "jQuery.zlux.lang.set(" . json_encode($translations) . ");";
 		}

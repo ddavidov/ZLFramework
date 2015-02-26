@@ -5,7 +5,7 @@
  * @license     GNU General Public License v2 or later
  */
 
-;(function ($, ZX, window, document, undefined) {
+(function ($, ZX, UI) {
     "use strict";
 
     var dropdown;
@@ -379,4 +379,4 @@
         }
     });
 
-})(jQuery, jQuery.zx, window, document);
+})(jQuery, zlux, UIkit);

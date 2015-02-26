@@ -5,7 +5,7 @@
  * @license     GNU General Public License v2 or later
  */
 
-;(function ($, ZX, window, document, undefined) {
+(function ($, ZX, UI) {
     "use strict";
 
     var datatables = function(){
@@ -177,4 +177,4 @@
     ZX.datatables.pagination = pagination;
     ZX.datatables.pagination_simple = pagination_simple;
 
-})(jQuery, jQuery.zx, window, document);
+})(jQuery, zlux, UIkit);

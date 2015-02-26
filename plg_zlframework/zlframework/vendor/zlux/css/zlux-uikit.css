@@ -136,8 +136,7 @@
    Component: Grid
  ========================================================================== */
   /*
- * 1. Needed for the gutter
- * 2. Makes grid more robust so that it can be used with other block elements like lists
+ * 1. Makes grid more robust so that it can be used with other block elements like lists
  */
   /*
  * DEPRECATED
@@ -148,8 +147,7 @@
  * Grid cell
  * 1. Space is allocated solely based on content dimensions
  * 2. Makes grid more robust so that it can be used with other block elements
- * 3. Create horizontal gutter
- * 4. DEPRECATED Using `float` to support IE9
+ * 3. DEPRECATED Using `float` to support IE9
  */
   /*
  * Remove margin from the last-child
@@ -157,28 +155,32 @@
   /* Grid gutter
  ========================================================================== */
   /*
- * Vertical gutter
+ * Default gutter
  */
-  /*
- * This class is set by JavaScript and applies a vertical gutter if the columns stack or float into the next row
- * Higher specificity to override margin
- */
-  /*
- * Vertical gutter for panels
- */
-  /*
- * Larger gutter for large screens
- */
+  /* Horizontal */
+  /* Vertical */
   /* Large screen and bigger */
   /*
- * Small gutter
- * Higher specificity to override large gutter
+ * Collapse gutter
  */
+  /* Horizontal */
+  /* Vertical */
+  /*
+ * Small gutter
+ */
+  /* Horizontal */
+  /* Vertical */
+  /*
+ * Medium gutter
+ */
+  /* Horizontal */
+  /* Vertical */
   /* Modifier: `uk-grid-divider`
  ========================================================================== */
   /*
  * Horizontal divider
- * Does not work with `uk-push-*`, `uk-pull-*` and not if the columns float into the next row
+ * Only works with the default gutter. Does not work with gutter collapse, small or large.
+ * Does not work with `uk-push-*`, `uk-pull-*` and not if the columns float into the next row.
  */
   /* Tablet and bigger */
   /* Desktop and bigger */
@@ -238,6 +240,8 @@
   /* Sub-object: `uk-panel-title`
  ========================================================================== */
   /* Sub-object: `uk-panel-badge`
+ ========================================================================== */
+  /* Sub-object: `uk-panel-teaser`
  ========================================================================== */
   /* Modifier: `uk-panel-box`
  ========================================================================== */
@@ -478,23 +482,25 @@
    Component: Subnav
  ========================================================================== */
   /*
- * 1. Remove default list style
- * 2. Remove whitespace between child elements when using `inline-block`
+ * 1. Gutter
+ * 2. Remove default list style
+ */
+  /*
+ * 1. Space is allocated solely based on content dimensions
+ * 2. Horizontal gutter is using `padding` so `uk-width-*` classes can be applied
+ * 3. Create position context for dropdowns
+ */
+  /*
+ * DEPRECATED IE9 Support
  */
   /* Items
  ========================================================================== */
   /*
- * 1. Create position context for dropdowns
- * 2. Reset whitespace hack
- */
-  /*
- * Items
+ * Hover
+ * 1. Apply hover style also to focus state
  */
   /*
  * Active
- */
-  /*
- * Disabled
  */
   /* Modifier: 'subnav-line'
  ========================================================================== */
@@ -509,6 +515,8 @@
  * Active
  * `li` needed for higher specificity to override hover
  */
+  /* Disabled state
+ ========================================================================== */
   /* ========================================================================
    Component: Breadcrumb
  ========================================================================== */
@@ -820,6 +828,33 @@
  * Sub-modifier: `uk-form-icon-flip`
  */
   /* ========================================================================
+   Component: Progress
+ ========================================================================== */
+  /*
+ * 1. Clearing
+ * 2. Vertical alignment if text is used
+ */
+  /*
+ * Add margin if adjacent element
+ */
+  /* Sub-object: `uk-progress-bar`
+ ========================================================================== */
+  /*
+ * 1. Transition
+ * 2. Needed for text
+ */
+  /* Size modifiers
+ ========================================================================== */
+  /* Mini */
+  /* Small */
+  /* Color modifiers
+ ========================================================================== */
+  /* Modifier: `uk-progress-striped`
+ ========================================================================== */
+  /*
+ * Animation
+ */
+  /* ========================================================================
    Component: Button
  ========================================================================== */
   /*
@@ -911,11 +946,18 @@
  * 2. Prevent inherit font style
  * 4. Correct line-height
  * 5. Better font rendering
+ * 6. Remove `text-decoration` for anchors
  */
+  /* 6 */
   /* Size modifiers
  ========================================================================== */
   /* Modifier: `uk-icon-spin`
  ========================================================================== */
+  /* Modifier: `uk-icon-hover`
+ ========================================================================== */
+  /*
+ * Hover
+ */
   /* Modifier: `uk-icon-button`
  ========================================================================== */
   /*
@@ -1025,12 +1067,58 @@
  * 2. Create position context
  * 3. Set max-width for responsive images to prevent `inline-block` consequences
  * 4. Remove the gap between the container and its child element
- * 5. Fixed wrong scaling calculation for images in Chrome
+ * 5. Needed for transitions and to fixed wrong scaling calculation for images in Chrome
+ * 6. Fixed `overflow: hidden` to be ignored with border-radius and CSS transforms in Webkit
+ * 7. Reset margin
  */
+  /* 6 for Safari */
   /*
  * Remove margin from content
  */
-  /* Sub-object `uk-overlay-area`
+  /* Sub-object `uk-overlay-panel`
+ ========================================================================== */
+  /*
+ * 1. Position cover
+ * 2. Style
+ */
+  /*
+ * Remove margin from the last-child
+ */
+  /*
+ * Keep color for headings if the default heading color is changed
+ */
+  /* Sub-object `uk-overlay-hover` and `uk-overlay-active`
+ ========================================================================== */
+  /* Modifier `uk-overlay-background`
+ ========================================================================== */
+  /* Position modifiers
+ ========================================================================== */
+  /* Sub-object `uk-overlay-icon`
+ ========================================================================== */
+  /* Transitions
+ ========================================================================== */
+  /*
+ * Fade
+ */
+  /*
+ * Scale
+ */
+  /*
+ * Spin
+ */
+  /*
+ * Grayscale
+ */
+  /*
+ * Slide
+ */
+  /* Top */
+  /* Bottom */
+  /* Left */
+  /* Right */
+  /* Hover */
+  /* DEPRECATED
+ * Sub-object `uk-overlay-area`
  ========================================================================== */
   /*
  * 1. Set position
@@ -1045,7 +1133,8 @@
   /*
  * Icon
  */
-  /* Sub-object `uk-overlay-area-content`
+  /* DEPRECATED
+ * Sub-object `uk-overlay-area-content`
  ========================================================================== */
   /*
  * Remove whitespace between child elements when using `inline-block`
@@ -1080,33 +1169,6 @@
  * 2. Use optional `uk-overlay-toggle` to trigger the overlay earlier
  */
   /* ========================================================================
-   Component: Progress
- ========================================================================== */
-  /*
- * 1. Clearing
- * 2. Vertical alignment if text is used
- */
-  /*
- * Add margin if adjacent element
- */
-  /* Sub-object: `uk-progress-bar`
- ========================================================================== */
-  /*
- * 1. Transition
- * 2. Needed for text
- */
-  /* Size modifiers
- ========================================================================== */
-  /* Mini */
-  /* Small */
-  /* Color modifiers
- ========================================================================== */
-  /* Modifier: `uk-progress-striped`
- ========================================================================== */
-  /*
- * Animation
- */
-  /* ========================================================================
    Component: Animation
  ========================================================================== */
   /* Hide animated element if scrollspy is used */
@@ -1136,7 +1198,7 @@
 ========================================================================== */
   /*
  * Enable animation only on hover
- * Needed for Firefox because animations are not triggered when switching between display `hidden` and `block`
+ * Note: Firefox also needs this because animations are not triggered when switching between display `hidden` and `block`
  */
   /* Keyframes: Fade
  * Used by dropdown, datepicker and slideshow component
@@ -1232,6 +1294,9 @@
   /* ========================================================================
    Component: Switcher
  ========================================================================== */
+  /*
+ * 1. Deactivate browser history navigation in IE11
+ */
   /*
  * Items
  */
@@ -1512,8 +1577,7 @@
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   /* 1 */
-  margin: 0 0 0 -25px;
-  /* 2 */
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -1534,58 +1598,71 @@
   /* 2 */
   margin: 0;
   /* 3 */
-  padding-left: 25px;
-  /* 4 */
   float: left;
 }
 .zx .uk-grid > * > :last-child {
   margin-bottom: 0;
 }
-.zx .uk-grid + .uk-grid {
-  margin-top: 25px;
+.zx .uk-grid {
+  margin-left: -25px;
 }
-.zx .uk-grid > .uk-grid-margin {
-  margin-top: 25px;
+.zx .uk-grid > * {
+  padding-left: 25px;
 }
+.zx .uk-grid + .uk-grid,
+.zx .uk-grid-margin,
 .zx .uk-grid > * > .uk-panel + .uk-panel {
   margin-top: 25px;
 }
 @media (min-width: 1220px) {
   .zx {
-    /* Horizontal gutter */
-    /* Vertical gutter */
-    /* Vertical gutter for panels */
+    /* Horizontal */
+    /* Vertical */
   }
-  .zx .uk-grid:not(.uk-grid-preserve) {
+  .zx .uk-grid {
     margin-left: -25px;
   }
-  .zx .uk-grid:not(.uk-grid-preserve) > * {
+  .zx .uk-grid > * {
     padding-left: 25px;
   }
-  .zx .uk-grid:not(.uk-grid-preserve) + .uk-grid {
-    margin-top: 25px;
-  }
-  .zx .uk-grid:not(.uk-grid-preserve) > .uk-grid-margin {
-    margin-top: 25px;
-  }
-  .zx .uk-grid:not(.uk-grid-preserve) > * > .uk-panel + .uk-panel {
+  .zx .uk-grid + .uk-grid,
+  .zx .uk-grid-margin,
+  .zx .uk-grid > * > .uk-panel + .uk-panel {
     margin-top: 25px;
   }
 }
-.zx .uk-grid.uk-grid-small {
+.zx .uk-grid-collapse {
+  margin-left: 0;
+}
+.zx .uk-grid-collapse > * {
+  padding-left: 0;
+}
+.zx .uk-grid-collapse + .uk-grid-collapse,
+.zx .uk-grid-collapse > .uk-grid-margin,
+.zx .uk-grid-collapse > * > .uk-panel + .uk-panel {
+  margin-top: 0;
+}
+.zx .uk-grid-small {
   margin-left: -10px;
 }
-.zx .uk-grid.uk-grid-small > * {
+.zx .uk-grid-small > * {
   padding-left: 10px;
 }
-.zx .uk-grid.uk-grid-small + .uk-grid-small {
+.zx .uk-grid-small + .uk-grid-small,
+.zx .uk-grid-small > .uk-grid-margin,
+.zx .uk-grid-small > * > .uk-panel + .uk-panel {
   margin-top: 10px;
 }
-.zx .uk-grid.uk-grid-small > .uk-grid-margin {
-  margin-top: 10px;
+.zx .uk-grid-medium {
+  margin-left: -25px;
 }
-.zx .uk-grid.uk-grid-small > * > .uk-panel + .uk-panel {
-  margin-top: 10px;
+.zx .uk-grid-medium > * {
+  padding-left: 25px;
+}
+.zx .uk-grid-medium + .uk-grid-medium,
+.zx .uk-grid-medium > .uk-grid-margin,
+.zx .uk-grid-medium > * > .uk-panel + .uk-panel {
+  margin-top: 25px;
 }
 .zx .uk-grid-divider:not(:empty) {
   margin-left: -25px;
@@ -1622,15 +1699,15 @@
      * Large gutter
      */
   }
-  .zx .uk-grid-divider:not(.uk-grid-preserve):not(:empty) {
+  .zx .uk-grid-divider:not(:empty) {
     margin-left: -25px;
     margin-right: -25px;
   }
-  .zx .uk-grid-divider:not(.uk-grid-preserve) > * {
+  .zx .uk-grid-divider > * {
     padding-left: 25px;
     padding-right: 25px;
   }
-  .zx .uk-grid-divider:not(.uk-grid-preserve):empty {
+  .zx .uk-grid-divider:empty {
     margin-top: 25px;
     margin-bottom: 25px;
   }
@@ -2164,8 +2241,7 @@
   position: relative;
 }
 .zx .uk-panel,
-.zx a.uk-panel:hover {
-  color: inherit;
+.zx .uk-panel:hover {
   text-decoration: none;
 }
 .zx .uk-panel:before,
@@ -2194,6 +2270,9 @@
   right: 0;
   z-index: 1;
 }
+.zx .uk-panel-teaser {
+  margin-bottom: 20px;
+}
 .zx .uk-panel-box {
   padding: 20px;
   background: #ffffff;
@@ -2201,7 +2280,7 @@
   border: 1px solid #e5e5e5;
   border-radius: 2px;
 }
-.zx a.uk-panel-box:hover {
+.zx .uk-panel-box-hover:hover {
   color: #444444;
 }
 .zx .uk-panel-box .uk-panel-title {
@@ -2212,7 +2291,9 @@
   right: 10px;
 }
 .zx .uk-panel-box .uk-panel-teaser {
-  margin: -20px -20px 20px -20px;
+  margin-top: -20px;
+  margin-left: -20px;
+  margin-right: -20px;
 }
 .zx .uk-panel-box > .uk-nav-side {
   margin: 0 -20px;
@@ -2221,7 +2302,7 @@
   background-color: #fafafa;
   color: #444444;
 }
-.zx a.uk-panel-box-primary:hover {
+.zx .uk-panel-box-primary-hover:hover {
   color: #444444;
 }
 .zx .uk-panel-box-primary .uk-panel-title {
@@ -2231,7 +2312,7 @@
   background-color: #f5f5f5;
   color: #444444;
 }
-.zx a.uk-panel-box-secondary:hover {
+.zx .uk-panel-box-secondary-hover:hover {
   color: #444444;
 }
 .zx .uk-panel-box-secondary .uk-panel-title {
@@ -2239,6 +2320,7 @@
 }
 .zx .uk-panel-hover {
   padding: 15px;
+  color: #444444;
 }
 .zx .uk-panel-hover:hover {
   background: #f5f5f5;
@@ -2249,7 +2331,9 @@
   right: 10px;
 }
 .zx .uk-panel-hover .uk-panel-teaser {
-  margin: -15px -15px 20px -15px;
+  margin-top: -15px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 .zx .uk-panel-header .uk-panel-title {
   padding-bottom: 10px;
@@ -2676,61 +2760,87 @@
   float: right;
 }
 .zx .uk-subnav {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
   /* 1 */
+  margin-left: -10px;
+  margin-top: -10px;
+  /* 2 */
   padding: 0;
   list-style: none;
-  /* 2 */
-  font-size: 0.001px;
 }
-.zx .uk-subnav > li {
+.zx .uk-subnav > * {
   /* 1 */
-  position: relative;
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
   /* 2 */
-  font-size: 1rem;
-  vertical-align: top;
+  padding-left: 10px;
+  margin-top: 10px;
+  /* 3 */
+  position: relative;
 }
-.zx .uk-subnav > li,
-.zx .uk-subnav > li > a,
-.zx .uk-subnav > li > span {
+.zx .uk-subnav:before,
+.zx .uk-subnav:after {
+  content: "";
+  display: block;
+  overflow: hidden;
+}
+.zx .uk-subnav:after {
+  clear: both;
+}
+.zx .uk-subnav > * {
+  float: left;
+}
+.zx .uk-subnav > * > * {
   display: inline-block;
-}
-.zx .uk-subnav > li:nth-child(n+2) {
-  margin-left: 10px;
-}
-.zx .uk-subnav > li > a {
   color: #37a5e5;
 }
-.zx .uk-subnav > li > a:hover {
+.zx .uk-subnav > * > *:hover,
+.zx .uk-subnav > * > *:focus {
   color: #1889c7;
+  text-decoration: none;
 }
-.zx .uk-subnav > li > span {
-  color: #999999;
+.zx .uk-subnav > .uk-active > * {
+  color: #0077dd;
 }
-.zx .uk-subnav-line > li:nth-child(n+2):before {
+.zx .uk-subnav-line > :before {
   content: "";
   display: inline-block;
   height: 10px;
+  vertical-align: middle;
+}
+.zx .uk-subnav-line > :nth-child(n+2):before {
   margin-right: 10px;
   border-left: 1px solid #e5e5e5;
 }
-.zx .uk-subnav-pill > li > a,
-.zx .uk-subnav-pill > li > span {
+.zx .uk-subnav-pill > * > * {
   padding: 3px 9px;
-  text-decoration: none;
   border-radius: 2px;
 }
-.zx .uk-subnav-pill > li > a:hover,
-.zx .uk-subnav-pill > li > a:focus {
+.zx .uk-subnav-pill > * > *:hover,
+.zx .uk-subnav-pill > * > *:focus {
   background: #fafafa;
   color: #444444;
+  text-decoration: none;
   /* 2 */
   outline: none;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
-.zx .uk-subnav-pill > li.uk-active > a {
+.zx .uk-subnav-pill > .uk-active > * {
   background: #37a5e4;
   color: #ffffff;
   box-shadow: none;
+}
+.zx .uk-subnav > .uk-disabled > * {
+  background: none;
+  color: #999999;
+  text-decoration: none;
+  cursor: text;
 }
 .zx .uk-breadcrumb {
   /* 1 */
@@ -2902,7 +3012,7 @@
 }
 .zx .uk-tab > li.uk-disabled > a {
   color: #999999;
-  cursor: auto;
+  cursor: text;
 }
 .zx .uk-tab > li.uk-disabled > a:hover,
 .zx .uk-tab > li.uk-disabled > a:focus,
@@ -3556,6 +3666,75 @@
   color: #999999;
   font-style: italic;
 }
+.zx .uk-progress {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 20px;
+  margin-bottom: 20px;
+  background: #f5f5f5;
+  /* 1 */
+  overflow: hidden;
+  /* 2 */
+  line-height: 20px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  border-radius: 2px;
+}
+.zx * + .uk-progress {
+  margin-top: 20px;
+}
+.zx .uk-progress-bar {
+  width: 0;
+  height: 100%;
+  background: #37a5e4;
+  float: left;
+  /* 1 */
+  -webkit-transition: width 0.6s ease;
+  transition: width 0.6s ease;
+  /* 2 */
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+}
+.zx .uk-progress-mini {
+  height: 6px;
+}
+.zx .uk-progress-small {
+  height: 12px;
+}
+.zx .uk-progress-success .uk-progress-bar {
+  background-color: #80c96d;
+}
+.zx .uk-progress-warning .uk-progress-bar {
+  background-color: #ff9a2e;
+}
+.zx .uk-progress-danger .uk-progress-bar {
+  background-color: #f0615b;
+}
+.zx .uk-progress-striped .uk-progress-bar {
+  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 30px 30px;
+}
+.zx .uk-progress-striped.uk-active .uk-progress-bar {
+  -webkit-animation: uk-progress-bar-stripes 2s linear infinite;
+  animation: uk-progress-bar-stripes 2s linear infinite;
+}
+@-webkit-keyframes uk-progress-bar-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 30px 0;
+  }
+}
+@keyframes uk-progress-bar-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 30px 0;
+  }
+}
 .zx .uk-button::-moz-focus-inner {
   border: 0;
   padding: 0;
@@ -3765,7 +3944,7 @@
 @font-face {
   font-family: 'FontAwesome';
   src: url("../vendor/uikit/fonts/fontawesome-webfont.eot");
-  src: url("../vendor/uikit/fonts/fontawesome-webfont.eot?#iefix") format("embedded-opentype"), url("../vendor/uikit/fonts/fontawesome-webfont.woff") format("woff"), url("../vendor/uikit/fonts/fontawesome-webfont.ttf") format("truetype");
+  src: url("../vendor/uikit/fonts/fontawesome-webfont.eot?#iefix") format("embedded-opentype"), url("../vendor/uikit/fonts/fontawesome-webfont.woff2") format('woff2'), url("../vendor/uikit/fonts/fontawesome-webfont.woff") format("woff"), url("../vendor/uikit/fonts/fontawesome-webfont.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -3781,6 +3960,11 @@
   /* 5 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.zx [class*='uk-icon-'],
+.zx [class*='uk-icon-']:hover,
+.zx [class*='uk-icon-']:focus {
+  text-decoration: none;
 }
 .zx .uk-icon-small:before {
   font-size: 150%;
@@ -3798,6 +3982,12 @@
   display: inline-block;
   -webkit-animation: uk-rotate 2s infinite linear;
   animation: uk-rotate 2s infinite linear;
+}
+.zx .uk-icon-hover {
+  color: #999999;
+}
+.zx .uk-icon-hover:hover {
+  color: #444444;
 }
 .zx .uk-icon-button {
   -moz-box-sizing: border-box;
@@ -3817,7 +4007,6 @@
 .zx .uk-icon-button:focus {
   background-color: #fafafa;
   color: #444444;
-  text-decoration: none;
   /* 2 */
   outline: none;
   border-color: rgba(0, 0, 0, 0.15);
@@ -4274,6 +4463,7 @@
 .zx .uk-icon-twitter:before {
   content: "\f099";
 }
+.zx .uk-icon-facebook-f:before,
 .zx .uk-icon-facebook:before {
   content: "\f09a";
 }
@@ -4923,7 +5113,8 @@
 .zx .uk-icon-male:before {
   content: "\f183";
 }
-.zx .uk-icon-gittip:before {
+.zx .uk-icon-gittip:before,
+.zx .uk-icon-gratipay:before {
   content: "\f184";
 }
 .zx .uk-icon-sun-o:before {
@@ -5190,6 +5381,7 @@
 .zx .uk-icon-history:before {
   content: "\f1da";
 }
+.zx .uk-icon-genderless:before,
 .zx .uk-icon-circle-thin:before {
   content: "\f1db";
 }
@@ -5333,6 +5525,127 @@
 }
 .zx .uk-icon-meanpath:before {
   content: "\f20c";
+}
+.zx .uk-icon-buysellads:before {
+  content: "\f20d";
+}
+.zx .uk-icon-connectdevelop:before {
+  content: "\f20e";
+}
+.zx .uk-icon-dashcube:before {
+  content: "\f210";
+}
+.zx .uk-icon-forumbee:before {
+  content: "\f211";
+}
+.zx .uk-icon-leanpub:before {
+  content: "\f212";
+}
+.zx .uk-icon-sellsy:before {
+  content: "\f213";
+}
+.zx .uk-icon-shirtsinbulk:before {
+  content: "\f214";
+}
+.zx .uk-icon-simplybuilt:before {
+  content: "\f215";
+}
+.zx .uk-icon-skyatlas:before {
+  content: "\f216";
+}
+.zx .uk-icon-cart-plus:before {
+  content: "\f217";
+}
+.zx .uk-icon-cart-arrow-down:before {
+  content: "\f218";
+}
+.zx .uk-icon-diamond:before {
+  content: "\f219";
+}
+.zx .uk-icon-ship:before {
+  content: "\f21a";
+}
+.zx .uk-icon-user-secret:before {
+  content: "\f21b";
+}
+.zx .uk-icon-motorcycle:before {
+  content: "\f21c";
+}
+.zx .uk-icon-street-view:before {
+  content: "\f21d";
+}
+.zx .uk-icon-heartbeat:before {
+  content: "\f21e";
+}
+.zx .uk-icon-venus:before {
+  content: "\f221";
+}
+.zx .uk-icon-mars:before {
+  content: "\f222";
+}
+.zx .uk-icon-mercury:before {
+  content: "\f223";
+}
+.zx .uk-icon-transgender:before {
+  content: "\f224";
+}
+.zx .uk-icon-transgender-alt:before {
+  content: "\f225";
+}
+.zx .uk-icon-venus-double:before {
+  content: "\f226";
+}
+.zx .uk-icon-mars-double:before {
+  content: "\f227";
+}
+.zx .uk-icon-venus-mars:before {
+  content: "\f228";
+}
+.zx .uk-icon-mars-stroke:before {
+  content: "\f229";
+}
+.zx .uk-icon-mars-stroke-v:before {
+  content: "\f22a";
+}
+.zx .uk-icon-mars-stroke-h:before {
+  content: "\f22b";
+}
+.zx .uk-icon-neuter:before {
+  content: "\f22c";
+}
+.zx .uk-icon-facebook-official:before {
+  content: "\f230";
+}
+.zx .uk-icon-pinterest-p:before {
+  content: "\f231";
+}
+.zx .uk-icon-whatsapp:before {
+  content: "\f232";
+}
+.zx .uk-icon-server:before {
+  content: "\f233";
+}
+.zx .uk-icon-user-plus:before {
+  content: "\f234";
+}
+.zx .uk-icon-user-times:before {
+  content: "\f235";
+}
+.zx .uk-icon-hotel:before,
+.zx .uk-icon-bed:before {
+  content: "\f236";
+}
+.zx .uk-icon-viacoin:before {
+  content: "\f237";
+}
+.zx .uk-icon-train:before {
+  content: "\f238";
+}
+.zx .uk-icon-subway:before {
+  content: "\f239";
+}
+.zx .uk-icon-medium-logo:before {
+  content: "\f23a";
 }
 .zx .uk-close::-moz-focus-inner {
   border: 0;
@@ -5537,9 +5850,157 @@
   vertical-align: middle;
   /* 5 */
   overflow: hidden;
+  /* 6 */
+  -webkit-transform: translateZ(0);
+  /* 7 */
+  margin: 0;
+}
+.zx .uk-overlay.uk-border-circle {
+  -webkit-mask-image: -webkit-radial-gradient(circle, #ffffff 100%, #000000 100%);
 }
 .zx .uk-overlay > :first-child {
   margin-bottom: 0;
+}
+.zx .uk-overlay-panel {
+  /* 1 */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* 2 */
+  padding: 20px;
+  color: #ffffff;
+}
+.zx .uk-overlay-panel > :last-child,
+.zx .uk-overlay-panel.uk-flex > * > :last-child {
+  margin-bottom: 0;
+}
+.zx .uk-overlay-panel h1,
+.zx .uk-overlay-panel h2,
+.zx .uk-overlay-panel h3,
+.zx .uk-overlay-panel h4,
+.zx .uk-overlay-panel h5,
+.zx .uk-overlay-panel h6 {
+  color: inherit;
+}
+.zx .uk-overlay-panel a:not([class]) {
+  color: inherit;
+  text-decoration: underline;
+}
+.zx .uk-overlay-panel a[class*='uk-icon-']:not(.uk-icon-button) {
+  color: inherit;
+}
+.zx .uk-overlay-hover:not(:hover):not(.uk-hover) .uk-overlay-panel:not(.uk-ignore) {
+  opacity: 0;
+}
+.zx .uk-overlay-active :not(.uk-active) > .uk-overlay-panel:not(.uk-ignore) {
+  opacity: 0;
+}
+.zx .uk-overlay-background {
+  background: rgba(0, 0, 0, 0.5);
+}
+.zx .uk-overlay-top {
+  bottom: auto;
+}
+.zx .uk-overlay-bottom {
+  top: auto;
+}
+.zx .uk-overlay-left {
+  right: auto;
+}
+.zx .uk-overlay-right {
+  left: auto;
+}
+.zx .uk-overlay-icon:before {
+  content: "\f002";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
+  font-size: 50px;
+  line-height: 1;
+  font-family: FontAwesome;
+  text-align: center;
+  color: #ffffff;
+}
+.zx .uk-overlay-fade,
+.zx .uk-overlay-scale,
+.zx .uk-overlay-spin,
+.zx .uk-overlay-grayscale,
+.zx .uk-overlay-blur,
+.zx [class*='uk-overlay-slide'] {
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+  transition-property: opacity transform filter;
+}
+.zx .uk-overlay-active .uk-overlay-fade,
+.zx .uk-overlay-active .uk-overlay-scale,
+.zx .uk-overlay-active .uk-overlay-spin,
+.zx .uk-overlay-active [class*='uk-overlay-slide'] {
+  transition-duration: 0.8s;
+}
+.zx .uk-overlay-fade {
+  opacity: 0.7;
+}
+.zx .uk-overlay-hover:hover .uk-overlay-fade,
+.zx .uk-overlay-active .uk-active > .uk-overlay-fade {
+  opacity: 1;
+}
+.zx .uk-overlay-scale {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+.zx .uk-overlay-hover:hover .uk-overlay-scale,
+.zx .uk-overlay-active .uk-active > .uk-overlay-scale {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.zx .uk-overlay-spin {
+  -webkit-transform: scale(1) rotate(0deg);
+  transform: scale(1) rotate(0deg);
+}
+.zx .uk-overlay-hover:hover .uk-overlay-spin,
+.zx .uk-overlay-active .uk-active > .uk-overlay-spin {
+  -webkit-transform: scale(1.1) rotate(3deg);
+  transform: scale(1.1) rotate(3deg);
+}
+.zx .uk-overlay-grayscale {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.zx .uk-overlay-hover:hover .uk-overlay-grayscale,
+.zx .uk-overlay-active .uk-active > .uk-overlay-grayscale {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+.zx [class*='uk-overlay-slide'] {
+  opacity: 0;
+}
+.zx .uk-overlay-slide-top {
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+.zx .uk-overlay-slide-bottom {
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+}
+.zx .uk-overlay-slide-left {
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+}
+.zx .uk-overlay-slide-right {
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
+}
+.zx .uk-overlay-hover:hover [class*='uk-overlay-slide'],
+.zx .uk-overlay-active .uk-active > [class*='uk-overlay-slide'] {
+  opacity: 1;
+  -webkit-transform: translateX(0) translateY(0);
+  transform: translateX(0) translateY(0);
 }
 .zx .uk-overlay-area {
   /* 1 */
@@ -5631,75 +6092,6 @@
 .zx .uk-overlay-toggle.uk-hover .uk-overlay-caption {
   opacity: 1;
 }
-.zx .uk-progress {
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  height: 20px;
-  margin-bottom: 20px;
-  background: #f5f5f5;
-  /* 1 */
-  overflow: hidden;
-  /* 2 */
-  line-height: 20px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
-  border-radius: 2px;
-}
-.zx * + .uk-progress {
-  margin-top: 20px;
-}
-.zx .uk-progress-bar {
-  width: 0;
-  height: 100%;
-  background: #37a5e4;
-  float: left;
-  /* 1 */
-  -webkit-transition: width 0.6s ease;
-  transition: width 0.6s ease;
-  /* 2 */
-  font-size: 12px;
-  color: #ffffff;
-  text-align: center;
-}
-.zx .uk-progress-mini {
-  height: 6px;
-}
-.zx .uk-progress-small {
-  height: 12px;
-}
-.zx .uk-progress-success .uk-progress-bar {
-  background-color: #80c96d;
-}
-.zx .uk-progress-warning .uk-progress-bar {
-  background-color: #ff9a2e;
-}
-.zx .uk-progress-danger .uk-progress-bar {
-  background-color: #f0615b;
-}
-.zx .uk-progress-striped .uk-progress-bar {
-  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-size: 30px 30px;
-}
-.zx .uk-progress-striped.uk-active .uk-progress-bar {
-  -webkit-animation: uk-progress-bar-stripes 2s linear infinite;
-  animation: uk-progress-bar-stripes 2s linear infinite;
-}
-@-webkit-keyframes uk-progress-bar-stripes {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 30px 0;
-  }
-}
-@keyframes uk-progress-bar-stripes {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 30px 0;
-  }
-}
 .zx [class*='uk-animation-'] {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
@@ -5709,7 +6101,7 @@
   animation-fill-mode: both;
 }
 @media screen {
-  .zx [data-uk-scrollspy*='uk-animation-'] {
+  .zx [data-uk-scrollspy*='uk-animation-']:not([data-uk-scrollspy*='target']) {
     opacity: 0;
   }
 }
@@ -6234,9 +6626,129 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  /* 1 */
+  touch-action: cross-slide-y pinch-zoom double-tap-zoom;
 }
 .zx .uk-switcher > *:not(.uk-active) {
   display: none;
+}
+/* ========================================================================
+   Component: Tooltip
+ ========================================================================== */
+/*
+ * 1. Hide by default
+ * 2. Set fixed position
+ * 3. Set dimensions
+ * 4. Set style
+ */
+.uk-tooltip {
+  /* 1 */
+  display: none;
+  /* 2 */
+  position: absolute;
+  z-index: 1030;
+  /* 3 */
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  max-width: 200px;
+  padding: 5px 8px;
+  /* 4 */
+  background: #333333;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 3px;
+}
+/* Triangle
+ ========================================================================== */
+/*
+ * 1. Dashed is less antialised than solid
+ */
+.uk-tooltip:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  /* 1 */
+  border: 5px dashed #333333;
+}
+/* Direction modifiers
+ ========================================================================== */
+/*
+ * Top
+ */
+.uk-tooltip-top:after,
+.uk-tooltip-top-left:after,
+.uk-tooltip-top-right:after {
+  bottom: -5px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: #333333;
+}
+/*
+ * Bottom
+ */
+.uk-tooltip-bottom:after,
+.uk-tooltip-bottom-left:after,
+.uk-tooltip-bottom-right:after {
+  top: -5px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: #333333;
+}
+/*
+ * Top/Bottom center
+ */
+.uk-tooltip-top:after,
+.uk-tooltip-bottom:after {
+  left: 50%;
+  margin-left: -5px;
+}
+/*
+ * Top/Bottom left
+ */
+.uk-tooltip-top-left:after,
+.uk-tooltip-bottom-left:after {
+  left: 10px;
+}
+/*
+ * Top/Bottom right
+ */
+.uk-tooltip-top-right:after,
+.uk-tooltip-bottom-right:after {
+  right: 10px;
+}
+/*
+ * Left
+ */
+.uk-tooltip-left:after {
+  right: -5px;
+  top: 50%;
+  margin-top: -5px;
+  border-left-style: solid;
+  border-right: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: #333333;
+}
+/*
+ * Right
+ */
+.uk-tooltip-right:after {
+  left: -5px;
+  top: 50%;
+  margin-top: -5px;
+  border-right-style: solid;
+  border-left: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: #333333;
 }
 /* ========================================================================
    Component: Dropdown
@@ -6433,6 +6945,7 @@
  * 3. Allow scrolling for the modal dialog
  * 4. Mask the background page
  * 5. Fade-in transition
+ * 6. Deactivate browser history navigation in IE11
  */
 .uk-modal {
   /* 1 */
@@ -6453,6 +6966,8 @@
   opacity: 0;
   -webkit-transition: opacity 0.15s linear;
   transition: opacity 0.15s linear;
+  /* 6 */
+  touch-action: cross-slide-y pinch-zoom double-tap-zoom;
 }
 /*
  * Open state
@@ -6472,9 +6987,8 @@
 /*
  * 1. Create position context for caption, spinner and close button
  * 2. Set box sizing
- * 3. Min-height needed for initial loading and spinner
- * 4. Set style
- * 5. Slide-in transition
+ * 3. Set style
+ * 4. Slide-in transition
  */
 .uk-modal-dialog {
   /* 1 */
@@ -6488,10 +7002,8 @@
   max-width: 100%;
   max-width: calc(100% - 20px);
   /* 3 */
-  min-height: 200px;
-  /* 4 */
   background: #ffffff;
-  /* 5 */
+  /* 4 */
   opacity: 0;
   -webkit-transform: translateY(-100px);
   transform: translateY(-100px);
@@ -6543,6 +7055,7 @@
 .uk-modal-dialog-lightbox {
   margin: 15px auto;
   padding: 0;
+  min-height: 200px;
   max-width: 95%;
   max-width: calc(100% - 30px);
 }
@@ -6602,6 +7115,9 @@
   margin-bottom: -10px;
   color: #ffffff;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /* Sub-Object: `uk-modal-spinner`
  ========================================================================== */
@@ -6619,124 +7135,6 @@
   font-family: FontAwesome;
   -webkit-animation: uk-rotate 2s infinite linear;
   animation: uk-rotate 2s infinite linear;
-}
-/* ========================================================================
-   Component: Tooltip
- ========================================================================== */
-/*
- * 1. Hide by default
- * 2. Set fixed position
- * 3. Set dimensions
- * 4. Set style
- */
-.uk-tooltip {
-  /* 1 */
-  display: none;
-  /* 2 */
-  position: absolute;
-  z-index: 1030;
-  /* 3 */
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  max-width: 200px;
-  padding: 5px 8px;
-  /* 4 */
-  background: #333333;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  line-height: 18px;
-  text-align: center;
-  border-radius: 3px;
-}
-/* Triangle
- ========================================================================== */
-/*
- * 1. Dashed is less antialised than solid
- */
-.uk-tooltip:after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 0;
-  height: 0;
-  /* 1 */
-  border: 5px dashed #333333;
-}
-/* Direction modifiers
- ========================================================================== */
-/*
- * Top
- */
-.uk-tooltip-top:after,
-.uk-tooltip-top-left:after,
-.uk-tooltip-top-right:after {
-  bottom: -5px;
-  border-top-style: solid;
-  border-bottom: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-top-color: #333333;
-}
-/*
- * Bottom
- */
-.uk-tooltip-bottom:after,
-.uk-tooltip-bottom-left:after,
-.uk-tooltip-bottom-right:after {
-  top: -5px;
-  border-bottom-style: solid;
-  border-top: none;
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-bottom-color: #333333;
-}
-/*
- * Top/Bottom center
- */
-.uk-tooltip-top:after,
-.uk-tooltip-bottom:after {
-  left: 50%;
-  margin-left: -5px;
-}
-/*
- * Top/Bottom left
- */
-.uk-tooltip-top-left:after,
-.uk-tooltip-bottom-left:after {
-  left: 10px;
-}
-/*
- * Top/Bottom right
- */
-.uk-tooltip-top-right:after,
-.uk-tooltip-bottom-right:after {
-  right: 10px;
-}
-/*
- * Left
- */
-.uk-tooltip-left:after {
-  right: -5px;
-  top: 50%;
-  margin-top: -5px;
-  border-left-style: solid;
-  border-right: none;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
-  border-left-color: #333333;
-}
-/*
- * Right
- */
-.uk-tooltip-right:after {
-  left: -5px;
-  top: 50%;
-  margin-top: -5px;
-  border-right-style: solid;
-  border-left: none;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
-  border-right-color: #333333;
 }
 .zx {
   /* ========================================================================
@@ -6879,6 +7277,12 @@
  */
   /* Position
  ========================================================================== */
+  /*
+ * Cover
+ */
+  /*
+ * Relative
+ */
   /* Display
  ========================================================================== */
   /*
@@ -7173,6 +7577,10 @@
 .zx .uk-border-rounded {
   border-radius: 5px;
 }
+.zx .uk-heading-large {
+  font-size: 36px;
+  line-height: 42px;
+}
 @media (min-width: 768px) {
   .zx .uk-heading-large {
     font-size: 52px;
@@ -7221,16 +7629,34 @@
 .zx .uk-overflow-container > :last-child {
   margin-bottom: 0;
 }
-.zx .uk-position-top,
-.zx .uk-position-bottom {
+.zx .uk-position-absolute,
+.zx [class*='uk-position-top'],
+.zx [class*='uk-position-bottom'] {
   position: absolute !important;
-  width: 100%;
 }
 .zx .uk-position-top {
   top: 0;
+  width: 100%;
 }
 .zx .uk-position-bottom {
   bottom: 0;
+  width: 100%;
+}
+.zx .uk-position-top-left {
+  top: 0;
+  left: 0;
+}
+.zx .uk-position-top-right {
+  top: 0;
+  right: 0;
+}
+.zx .uk-position-bottom-left {
+  bottom: 0;
+  left: 0;
+}
+.zx .uk-position-bottom-right {
+  bottom: 0;
+  right: 0;
 }
 .zx .uk-position-cover {
   position: absolute;
@@ -7355,19 +7781,21 @@
    Component: Dotnav
  ========================================================================== */
   /*
- * 1. Remove default list style
- * 2. Remove whitespace between child elements when using `inline-block`
+ * 1. Gutter
+ * 2. Remove default list style
+ */
+  /*
+ * 1. Space is allocated solely based on content dimensions
+ * 2. Horizontal gutter is using `padding` so `uk-width-*` classes can be applied
+ */
+  /*
+ * DEPRECATED IE9 Support
  */
   /* Items
  ========================================================================== */
   /*
- * 1. Reset whitespace hack
- * 2. Remove the gap at the bottom of it container
- */
-  /*
  * Items
- * 1. Remove the gap at the bottom of it container
- * 2. Hide text if present
+ * 1. Hide text if present
  */
   /*
  * Hover
@@ -7386,6 +7814,12 @@
   /* Active */
   /* Modifier: 'uk-dotnav-vertical'
  ========================================================================== */
+  /*
+ * DEPRECATED
+ */
+  /*
+ * DEPRECATED IE9 Support
+ */
   /* ========================================================================
    Component: Slidenav
  ========================================================================== */
@@ -7651,24 +8085,42 @@
  */
 }
 .zx .uk-dotnav {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
   /* 1 */
+  margin-left: -15px;
+  margin-top: -15px;
+  /* 2 */
   padding: 0;
   list-style: none;
-  /* 2 */
-  font-size: 0.001px;
 }
-.zx .uk-dotnav > li {
-  display: inline-block;
+.zx .uk-dotnav > * {
   /* 1 */
-  font-size: 1rem;
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
   /* 2 */
-  vertical-align: top;
+  padding-left: 15px;
+  margin-top: 15px;
 }
-.zx .uk-dotnav > li:nth-child(n+2) {
-  margin-left: 15px;
+.zx .uk-dotnav:before,
+.zx .uk-dotnav:after {
+  content: "";
+  display: block;
+  overflow: hidden;
 }
-.zx .uk-dotnav > li > a {
-  display: inline-block;
+.zx .uk-dotnav:after {
+  clear: both;
+}
+.zx .uk-dotnav > * {
+  float: left;
+}
+.zx .uk-dotnav > * > * {
+  display: block;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   width: 20px;
@@ -7676,43 +8128,42 @@
   border-radius: 50%;
   background: rgba(50, 50, 50, 0.1);
   /* 1 */
-  vertical-align: top;
-  /* 2 */
   text-indent: 100%;
   overflow: hidden;
   white-space: nowrap;
 }
-.zx .uk-dotnav > li > a:hover,
-.zx .uk-dotnav > li > a:focus {
+.zx .uk-dotnav > * > *:hover,
+.zx .uk-dotnav > * > *:focus {
   background: rgba(50, 50, 50, 0.4);
   /* 2 */
   outline: none;
 }
-.zx .uk-dotnav > li > a:active {
+.zx .uk-dotnav > * > *:active {
   background: rgba(50, 50, 50, 0.6);
 }
-.zx .uk-dotnav > li.uk-active > a {
+.zx .uk-dotnav > *.uk-active > * {
   background: rgba(50, 50, 50, 0.4);
 }
-.zx .uk-dotnav-contrast > li > a {
+.zx .uk-dotnav-contrast > * > * {
   background: rgba(255, 255, 255, 0.4);
 }
-.zx .uk-dotnav-contrast > li > a:hover,
-.zx .uk-dotnav-contrast > li > a:focus {
+.zx .uk-dotnav-contrast > * > *:hover,
+.zx .uk-dotnav-contrast > * > *:focus {
   background: rgba(255, 255, 255, 0.7);
 }
-.zx .uk-dotnav-contrast > li > a:active {
+.zx .uk-dotnav-contrast > * > *:active {
   background: rgba(255, 255, 255, 0.9);
 }
-.zx .uk-dotnav-contrast > li.uk-active > a {
+.zx .uk-dotnav-contrast > *.uk-active > * {
   background: rgba(255, 255, 255, 0.9);
 }
-.zx .uk-dotnav-vertical > li {
-  display: block;
+.zx .uk-dotnav-vertical {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
 }
-.zx .uk-dotnav-vertical > li:nth-child(n+2) {
-  margin-left: 0;
-  margin-top: 15px;
+.zx .uk-dotnav-vertical > * {
+  float: none;
 }
 .zx .uk-slidenav {
   /* 1 */

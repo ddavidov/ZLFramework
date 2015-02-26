@@ -8,14 +8,9 @@
 (function ($, UI) {
     "use strict";
 
-    var ZX = $.zx || {};
-
-    if (ZX.fn) {
-        return ZX;
-    }
+    var ZX = {};
 
     ZX.version = '2.0.2';
-
 
     /** URI **/
     ZX.url = {};
@@ -164,8 +159,8 @@
     };
 
 
-    window.zlux  = ZX;
-    $.zx         = ZX;
+    window.zlux = ZX;
+    $.zx        = ZX;
 
 
     UI.ready(function() {
@@ -177,6 +172,8 @@
 
         ZX.component.bootComponents();
     });
+
+    return ZX;
 
 })(jQuery, UIkit);
 ;(function ($, ZX, UI) {
@@ -422,7 +419,7 @@
     $.fn.zx = ZX.fn;
 
 })(jQuery, zlux, UIkit);
-;(function ($, ZX, window, document, undefined) {
+(function ($, ZX, UI) {
     "use strict";
 
     ZX.ajax = {};
@@ -692,8 +689,8 @@
         }
     };
 
-})(jQuery, jQuery.zx, window, document);
-;(function ($, ZX, window, document, undefined) {
+})(jQuery, zlux, UIkit);
+(function ($, ZX, UI) {
     "use strict";
 
     ZX.plugin('animate', {
@@ -736,8 +733,8 @@
         }
     });
 
-})(jQuery, jQuery.zx, window, document);
-;(function ($, ZX, window, document, undefined) {
+})(jQuery, zlux, UIkit);
+(function ($, ZX, UI) {
     "use strict";
 
     var modal = function(){},
@@ -806,8 +803,8 @@
     ZX.modal.alert    = alert;
     ZX.modal.confirm  = confirm;
 
-})(jQuery, jQuery.zx, window, document);
-;(function ($, ZX, window, document, undefined) {
+})(jQuery, zlux, UIkit);
+(function ($, ZX, UI) {
     "use strict";
     
     ZX.component('spin', {
@@ -872,8 +869,8 @@
         }
     });
 
-})(jQuery, jQuery.zx, window, document);
-;(function ($, ZX, window, document, undefined) {
+})(jQuery, zlux, UIkit);
+(function ($, ZX, UI) {
     "use strict";
 
     var instance_id = 0,
@@ -910,4 +907,4 @@
         });
     });
 
-})(jQuery, jQuery.zx, window, document);
+})(jQuery, zlux, UIkit);
