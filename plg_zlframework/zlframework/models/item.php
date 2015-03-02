@@ -588,7 +588,20 @@ class ZLModelItem extends ZLModel
 				} else {
 					// Normal search
 					$value = $this->getQuotedValue($element);
-					$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND TRIM(b$k.value) LIKE " . $value .') ';     
+					// for any word search
+					if ($element->get('type', 'exact_phrase') == 'any_word') {
+						// get all words and quote them
+						$words = explode(' ', $element->get('value', ''));
+						foreach ($words as &$word) {
+							$word = $this->_db->Quote("%$word%");
+						}
+						// save all values
+						$value = implode(" OR TRIM(b$k.value) LIKE ", $words);
+
+						$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND (TRIM(b$k.value) LIKE " . $value . ')) ';
+					} else {
+						$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND TRIM(b$k.value) LIKE " . $value . ') ';
+					}
 				}
 			}
 		}
