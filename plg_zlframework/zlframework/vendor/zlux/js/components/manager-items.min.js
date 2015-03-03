@@ -1,6 +1,6 @@
 /**
  * @package     zlux
- * @version     2.0.2
+ * @version     2.0.3
  * @author      ZOOlanders - http://zoolanders.com
  * @license     GNU General Public License v2 or later
  */
