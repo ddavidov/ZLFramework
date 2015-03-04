@@ -130,18 +130,11 @@ class plgSystemZlframework extends JPlugin {
 		// load ZL Fields, workaround for first time using ZL elements
 		if ($this->app->zlfw->isTheEnviroment('zoo-type-edit')) $this->app->zlfield->loadAssets();
 
-		// extend the Widgetkit2 ZOO mapping element list
+		// hook into Widgetkit2 mapping
 		if ($wk = @include JPATH_ADMINISTRATOR.'/components/com_widgetkit/widgetkit-app.php') {
-			$wk->on('joomla.zoo.items', function ($event, $app) { 
-
-				$mapping = array_merge_recursive($app['joomla.zoo']->getMapping(), array(
-					'location' => array('googlemapspro'),
-					'image'    => array('imagepro'),
-					'media'    => array('mediapro')
-				));
-
-				$app['joomla.zoo']->setMapping($mapping);
-			});
+			$this->app->loader->register('YOOtheme\Widgetkit\Joomla\Zoo\Transformer', 'plugins:system/widgetkit_zoo/plugin/src/Transformer.php');
+			$this->app->loader->register('YOOtheme\Widgetkit\Joomla\Zl\Transformer', 'classes:wk2trsf.php');
+			$wk['events']->addSubscriber(new YOOtheme\Widgetkit\Joomla\Zl\Transformer);
 		}
 	}
 

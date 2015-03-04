@@ -33,6 +33,7 @@ defined('_JEXEC') or die('Restricted access');
 			$item['content'] = $this->app->zlfw->applySeparators($separated_by[0], $item['content'], $params->find('separator._class'), $params->find('separator._fixhtml'));
 		}
 	}
+	unset($item);
 ?>
 
 <div id="showcase-<?php echo $widget_id; ?>" class="yoo-wk wk-slideshow-showcasebox" data-widgetkit="showcase" data-options='<?php echo json_encode($settings); ?>'>

@@ -138,33 +138,38 @@ defined('_JEXEC') or die('Restricted access');
 	}';
 
 	/* Types */
-	if(isset($params['types'])) $main[] = '"_chosentypes":{
-		"type":"types",
-		"label":"'.$params->find('types.label').'",
-		"help":"'.$params->find('types.help').'",
-		"help":"PLG_ZLFRAMEWORK_APP_TYPES_DESC",
-		"specific":{
-			'.($params->find('types.multi') ? '"multi":"1",' : '').'
-			"value_map":{
-				"apps":"_chosenapps"
-			}
-		},
-		"childs":{
-			"loadfields": {'.implode(",", $childs).'}
-		}
-	}';
-	
+	if (isset($params['types'])) {
 
-	// return json string
+		$specific = array();
+		$specific[] = $params->find('types.multi') ? '"multi":"1"' : '';
+		$specific[] = $params->find('types.types') ? '"types":"'.$params->find('types.types').'"' : '';
+		$specific[] = '"value_map":{"apps":"_chosenapps"}';
+		$specific = array_filter($specific);
+
+		$main[] = '"_chosentypes":{
+			"type":"types",
+			"label":"'.$params->find('types.label').'",
+			"help":"'.$params->find('types.help').'",
+			"help":"PLG_ZLFRAMEWORK_APP_TYPES_DESC",
+			"specific":{'.implode(',', $specific).'},
+			"childs":{
+				"loadfields": {'.implode(",", $childs).'}
+			}
+		}';
+	}
+
+	$specific = array();
+	$specific[] = $params->find('apps.multi') ? '"multi":"1"' : '';
+	$specific[] = $params->find('apps.group') ? '"group":"'.$params->find('apps.group').'"' : '';
+	$specific = array_filter($specific);
+
 	return
 	'{
 		"_chosenapps":{
 			"type": "apps",
 			"label": "'.$params->find('apps.label').'",
 			"help": "'.$params->find('apps.help').'",
-			"specific":{
-				'.($params->find('apps.multi') ? '"multi":"1"' : '').'
-			},
+			"specific":{'.implode(',', $specific).'},
 			"childs":{
 				"loadfields":{
 

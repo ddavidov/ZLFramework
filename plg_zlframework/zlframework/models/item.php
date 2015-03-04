@@ -439,7 +439,7 @@ class ZLModelItem extends ZLModel
 					foreach ($values as &$val) {
 						$val = $this->_db->Quote( $val );
 					}
-
+					unset($val);
 					// build the where for ORs
 					if ( strtoupper($tags->get('mode', 'OR')) == 'OR' ){
 						$wheres[$logic][] = "t.name IN (".implode(',', $values ).")";
@@ -588,7 +588,20 @@ class ZLModelItem extends ZLModel
 				} else {
 					// Normal search
 					$value = $this->getQuotedValue($element);
-					$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND TRIM(b$k.value) LIKE " . $value .') ';     
+					// for any word search
+					if ($element->get('type', 'exact_phrase') == 'any_word') {
+						// get all words and quote them
+						$words = explode(' ', $element->get('value', ''));
+						foreach ($words as &$word) {
+							$word = $this->_db->Quote("%$word%");
+						}
+						// save all values
+						$value = implode(" OR TRIM(b$k.value) LIKE ", $words);
+
+						$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND (TRIM(b$k.value) LIKE " . $value . ')) ';
+					} else {
+						$wheres[$logic][] = "(b$k.element_id = '" . $id . "' AND TRIM(b$k.value) LIKE " . $value . ') ';
+					}
 				}
 			}
 		}
@@ -920,7 +933,7 @@ class ZLModelItem extends ZLModel
 		}
 
 		// set priority at the end
-		if ($priority) $result[1] = "a.priority DESC, " . $result[1];
+		if ($priority) $result[1] = "a.priority $reversed, " . $result[1];
 
 		return $result;
 	}
