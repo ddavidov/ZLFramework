@@ -131,7 +131,7 @@ class plgSystemZlframework extends JPlugin {
 		if ($this->app->zlfw->isTheEnviroment('zoo-type-edit')) $this->app->zlfield->loadAssets();
 
 		// hook into Widgetkit2 mapping
-		if ($wk = @include JPATH_ADMINISTRATOR.'/components/com_widgetkit/widgetkit-app.php') {
+		if ($wk = @include JPATH_ADMINISTRATOR.'/components/com_widgetkit/widgetkit-app.php' and class_exists('YOOtheme\Widgetkit\Joomla\Zoo\Transformer')) {
 			$this->app->loader->register('YOOtheme\Widgetkit\Joomla\Zoo\Transformer', 'plugins:system/widgetkit_zoo/plugin/src/Transformer.php');
 			$this->app->loader->register('YOOtheme\Widgetkit\Joomla\Zl\Transformer', 'classes:wk2trsf.php');
 			$wk['events']->addSubscriber(new YOOtheme\Widgetkit\Joomla\Zl\Transformer);
